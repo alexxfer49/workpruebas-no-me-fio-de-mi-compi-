@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="img/logo-icon.png">
+    <title>Cuestionario · WorkPath</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/cuestionario.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/ui.js"></script>
+</head>
+
+<body>
+
+    <!-- CABECERA CON MENÚ -->
+    <header class="top">
+        <a class="brand" href="index.html">
+            <img src="img/logo-icon.png" alt="Logo WorkPath">
+            <b>Work<span>Path</span></b>
+        </a>
+        <nav class="menu" aria-label="Apartados">
+            <a href="index.html">Inicio</a>
+            <a href="login.html" class="user" id="enlaceAcceso">👤 Mi Perfil</a>
+        </nav>
+    </header>
+
+    <!-- BANDA DE TÍTULO -->
+    <section class="banda">
+        <h1>🧭 Cuestionario de Orientación</h1>
+        <p>Cuéntanos qué has estudiado, a dónde quieres ir y cómo quieres trabajar.</p>
+    </section>
+
+    <!-- CONTENIDO DEL CUESTIONARIO -->
+    <main class="pagina">
+        <form id="formularioCuestionario" action="resultado.html" method="get">
+
+            <!-- BLOQUE 1: ESTUDIOS -->
+            <fieldset>
+                <legend>1 · Estudios</legend>
+
+                <p class="pregunta">¿Cuál es tu nivel de estudios? *</p>
+                <label class="opcion"><input type="radio" name="estudios" value="eso" required> ESO</label>
+                <label class="opcion"><input type="radio" name="estudios" value="bachillerato"> Bachillerato</label>
+                <label class="opcion"><input type="radio" name="estudios" value="gm"> Grado Medio (FP)</label>
+                <label class="opcion"><input type="radio" name="estudios" value="gs"> Grado Superior (FP)</label>
+                <label class="opcion"><input type="radio" name="estudios" value="universidad"> Universidad</label>
+
+                <label for="titulo">Título que estudias o has terminado</label>
+                <input type="text" id="titulo" name="titulo" placeholder="Ej: Sistemas Microinformáticos y Redes">
+            </fieldset>
+
+            <!-- BLOQUE 2: FORMACIÓN -->
+            <fieldset>
+                <legend>2 · Formación</legend>
+
+                <p class="pregunta">¿Qué formación extra tienes? (puedes marcar varias)</p>
+                <label class="opcion"><input type="checkbox" name="formacion" value="idiomas"> Cursos de idiomas</label>
+                <label class="opcion"><input type="checkbox" name="formacion" value="informatica"> Cursos de informática</label>
+                <label class="opcion"><input type="checkbox" name="formacion" value="certificados"> Certificados oficiales</label>
+                <label class="opcion"><input type="checkbox" name="formacion" value="practicas"> Prácticas en empresa</label>
+                <label class="opcion"><input type="checkbox" name="formacion" value="ninguna"> Ninguna</label>
+
+                <label for="ingles">Nivel de inglés *</label>
+                <select id="ingles" name="ingles" required>
+                    <option value="">-- Elige una opción --</option>
+                    <option value="a1">A1 · Principiante</option>
+                    <option value="a2">A2 · Básico</option>
+                    <option value="b1">B1 · Intermedio</option>
+                    <option value="b2">B2 · Intermedio alto</option>
+                    <option value="c1">C1 · Avanzado</option>
+                    <option value="c2">C2 · Bilingüe / Nativo</option>
+                </select>
+            </fieldset>
+
+            <!-- BLOQUE 3: PAÍS DE DESTINO -->
+            <fieldset>
+                <legend>3 · País de destino</legend>
+
+                <label for="pais">¿A qué país quieres ir? *</label>
+                <select id="pais" name="pais" required>
+                    <option value="">-- Elige un país --</option>
+                    <option value="alemania">Alemania</option>
+                    <option value="francia">Francia</option>
+                    <option value="italia">Italia</option>
+                    <option value="irlanda">Irlanda</option>
+                    <option value="reino-unido">Reino Unido</option>
+                    <option value="paises-bajos">Países Bajos</option>
+                    <option value="portugal">Portugal</option>
+                    <option value="eeuu">Estados Unidos</option>
+                    <option value="canada">Canadá</option>
+                    <option value="otro">Otro</option>
+                </select>
+
+                <p class="pregunta">¿Por cuánto tiempo? *</p>
+                <label class="opcion"><input type="radio" name="tiempo" value="meses" required> Unos meses</label>
+                <label class="opcion"><input type="radio" name="tiempo" value="1-2"> De 1 a 2 años</label>
+                <label class="opcion"><input type="radio" name="tiempo" value="siempre"> Para siempre</label>
+            </fieldset>
+
+            <!-- BLOQUE 4: MODALIDAD DE TRABAJO -->
+            <fieldset>
+                <legend>4 · Cómo quieres trabajar</legend>
+
+                <p class="pregunta">Modalidad *</p>
+                <label class="opcion"><input type="radio" name="modalidad" value="presencial" required> Presencial</label>
+                <label class="opcion"><input type="radio" name="modalidad" value="remoto"> Teletrabajo</label>
+                <label class="opcion"><input type="radio" name="modalidad" value="hibrido"> Híbrido</label>
+
+                <p class="pregunta">Jornada *</p>
+                <label class="opcion"><input type="radio" name="jornada" value="completa" required> Completa</label>
+                <label class="opcion"><input type="radio" name="jornada" value="parcial"> Media jornada</label>
+
+                <p class="pregunta">Áreas que te interesan (puedes marcar varias)</p>
+                <label class="opcion"><input type="checkbox" name="area" value="soporte"> Soporte técnico</label>
+                <label class="opcion"><input type="checkbox" name="area" value="redes"> Redes y sistemas</label>
+                <label class="opcion"><input type="checkbox" name="area" value="seguridad"> Ciberseguridad</label>
+                <label class="opcion"><input type="checkbox" name="area" value="web"> Desarrollo web</label>
+                <label class="opcion"><input type="checkbox" name="area" value="autonomo"> Autónomo</label>
+
+                <label for="comentarios">¿Quieres añadir algo más?</label>
+                <textarea id="comentarios" name="comentarios" rows="4" placeholder="Escribe aquí tus dudas o preferencias..."></textarea>
+            </fieldset>
+
+            <!-- BOTONES DE ENVÍO -->
+            <div class="botones">
+                <button type="submit">Ver resultado</button>
+                <button type="reset" class="secundario">Borrar todo</button>
+            </div>
+
+        </form>
+    </main>
+
+    <footer>
+        WorkPath · Solo orienta. No tramita visados ni sustituye a una embajada, un abogado o un asesor.
+        Comprueba siempre la fuente oficial.
+    </footer>
+
+</body>
+
+</html>

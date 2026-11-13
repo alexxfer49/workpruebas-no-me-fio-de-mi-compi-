@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="img/logo-icon.png">
+    <title>WorkPath · El teu futur laboral sense fronteres</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/ui.js"></script>
+</head>
+<body>
+    <header class="top">
+        <a class="brand" href="index.html">
+            <img src="img/logo-icon.png" alt="Logo WorkPath">
+            <b>Work<span>Path</span></b>
+        </a>
+        <nav class="menu" aria-label="Apartados">
+        <a href="resultado.html">resultado</a>
+            <a href="cuestionario.html" class="cuestionario accesoDenegado"><i>🧭</i>cuestionario</a>
+            <a href="login.html" class="user" id="enlaceAcceso">👤 Entrar</a>
+        
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div>
+            <h1>Tu futuro laboral, <em>sin fronteras</em></h1>
+            <p>Te orientamos sobre visados de trabajo, organizamos tus documentos y te acompañamos paso a paso. No tramitamos visados: te ayudamos a prepararlos.</p>
+            <div class="tiles">
+                <a href="cuestionario.html" class="cuestionario accesoDenegado "><i>🧭</i>cuestionario</a>
+                <a href="login.html" id="tileAcceso"><i>👤</i>Mi cuenta</a>
+
+            </div>  
+        </div>
+        <div class="logo-card vuela">
+            <img src="img/logo.png" alt="WorkPath · El teu futur laboral sense fronteres">
+        </div>
+    </section>
+
+    <main class="pagina">
+        <h2>📝 Bienvenido a WorkPath</h2>
+        <p>Selecciona una opción en el menú superior o accede a tu cuenta para gestionar tus trámites.</p>
+        <div data-wp="inicio"></div>
+    </main>
+
+    <footer>
+        WorkPath · Solo orienta. No tramita visados ni sustituye a una embajada, un abogado o un asesor. Comprueba siempre la fuente oficial.
+    </footer>
+</body>
+</html>
