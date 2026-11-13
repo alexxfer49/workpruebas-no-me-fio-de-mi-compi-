@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
-         // 2. Buscar o crear el ID del usuario en la tabla usuaris
+            // 2. Buscar o crear el ID del usuario en la tabla usuaris
             var perfil = await clienteSupabase
                 .from("usuaris")
                 .select("id")
@@ -40,13 +40,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
             var idUsuario;
 
-            // Si el usuario no tiene fila en la tabla 'usuaris', la creamos al vuelo
+            // Si el usuario no tiene fila en la tabla 'usuaris', la creamos al vuelo (solo con auth_id)
             if (!perfil.data) {
                 var nuevoPerfil = await clienteSupabase
                     .from("usuaris")
                     .insert([{ 
-                        auth_id: usuario.id, 
-                        email: usuario.email 
+                        auth_id: usuario.id 
                     }])
                     .select("id")
                     .single();
@@ -58,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
             } else {
                 idUsuario = perfil.data.id;
             }
+
             // 3. Recoger las respuestas del formulario de forma segura
             var estudiosInput = formularioCuestionario.querySelector('input[name="estudios"]:checked');
             var estudios = estudiosInput ? estudiosInput.value : "";
