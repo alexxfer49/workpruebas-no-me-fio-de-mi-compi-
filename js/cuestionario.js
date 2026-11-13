@@ -29,23 +29,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
             var idUsuario = perfil.id;
 
-            // 3. Recoger los datos del formulario
+            // 3. Recoger todos los datos del formulario de forma segura
             var estudiosInput = formularioCuestionario.querySelector('input[name="estudios"]:checked');
             var estudios = estudiosInput ? estudiosInput.value : "";
             var titulo = document.getElementById("titulo") ? document.getElementById("titulo").value : "";
             var ingles = document.getElementById("ingles") ? document.getElementById("ingles").value : "";
             var pais = document.getElementById("pais") ? document.getElementById("pais").value : "";
             
-            // Recoger campos obligatorios de radio
+            // Campos de radio obligatorios
             var tiempoInput = formularioCuestionario.querySelector('input[name="tiempo"]:checked');
             var tiempo = tiempoInput ? tiempoInput.value : "";
 
             var modalidadInput = formularioCuestionario.querySelector('input[name="modalidad"]:checked');
             var modalidad = modalidadInput ? modalidadInput.value : "";
 
+            var jornadaInput = formularioCuestionario.querySelector('input[name="jornada"]:checked');
+            var jornada = jornadaInput ? jornadaInput.value : ""; // <--- ¡Jornada recogida!
+
             var comentarios = document.getElementById("comentarios") ? document.getElementById("comentarios").value : "";
 
-            // Validaciones rápidas por si se deja algo obligatorio sin marcar
+            // Validaciones por seguridad
             if (!tiempo) {
                 alert("Por favor, selecciona una opción en el campo de tiempo.");
                 return;
@@ -54,8 +57,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 alert("Por favor, selecciona una modalidad de trabajo.");
                 return;
             }
+            if (!jornada) {
+                alert("Por favor, selecciona un tipo de jornada.");
+                return;
+            }
 
-            // 4. Guardar en la tabla 'cuestionarios' incluyendo modalidad
+            // 4. Guardar en la tabla 'cuestionarios' con todos los campos obligatorios
             var { error: insertError } = await clienteSupabase
                 .from("cuestionarios")
                 .insert([{
@@ -65,7 +72,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     ingles: ingles,
                     pais: pais,
                     tiempo: tiempo,
-                    modalidad: modalidad, // <--- ¡AQUÍ ESTÁ LA MODALIDAD AÑADIDA!
+                    modalidad: modalidad,
+                    jornada: jornada, // <--- ¡Enviado a Supabase!
                     comentarios: comentarios
                 }]);
 
