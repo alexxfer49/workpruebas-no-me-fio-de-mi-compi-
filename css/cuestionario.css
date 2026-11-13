@@ -1,0 +1,112 @@
+/* Estilos del cuestionario (cuestionario.html).
+   También los usa resultado.html para los botones.
+   Usa colores heredados para no chocar con css/styles.css. */
+
+/* Banda de título */
+.banda {
+    padding: 2rem 1.25rem;
+    text-align: center;
+}
+
+.banda h1 {
+    margin: 0 0 0.5rem;
+}
+
+.banda p {
+    margin: 0;
+}
+
+/* Cada bloque del cuestionario */
+fieldset {
+    border: 1px solid rgba(128, 128, 128, 0.45);
+    border-radius: 10px;
+    padding: 1rem 1.25rem 1.25rem;
+    margin: 0 0 1.5rem;
+}
+
+legend {
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0 0.5rem;
+}
+
+/* Texto de cada pregunta */
+.pregunta {
+    font-weight: 700;
+    margin: 1.25rem 0 0.5rem;
+}
+
+fieldset .pregunta:first-of-type {
+    margin-top: 0.25rem;
+}
+
+/* Cada respuesta (radio o casilla) */
+.opcion {
+    display: block;
+    padding: 0.4rem 0;
+    cursor: pointer;
+}
+
+.opcion input {
+    margin-right: 0.5rem;
+}
+
+/* Campos de texto, listas y área de comentarios */
+fieldset label[for] {
+    display: block;
+    font-weight: 700;
+    margin: 1.25rem 0 0.4rem;
+}
+
+fieldset input[type="text"],
+fieldset select,
+fieldset textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0.6rem 0.75rem;
+    font: inherit;
+    border: 1px solid rgba(128, 128, 128, 0.6);
+    border-radius: 8px;
+}
+
+fieldset textarea {
+    resize: vertical;
+}
+
+/* Accesibilidad: que se vea dónde está el teclado */
+fieldset input:focus-visible,
+fieldset select:focus-visible,
+fieldset textarea:focus-visible,
+.opcion input:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* Botones de enviar y borrar */
+.botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+
+.botones button {
+    padding: 0.7rem 1.4rem;
+    font: inherit;
+    font-weight: 700;
+    border: 2px solid currentColor;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.botones button.secundario {
+    background: transparent;
+    color: inherit;
+    opacity: 0.8;
+}
+
+.botones button:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+}
