@@ -32,11 +32,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     throw registro.error;
                 }
 
-                // 2. Guardar los datos personales en la tabla usuaris
+                // 2. Guardar los datos personales en la tabla usuaris INCLUYENDO EL auth_id
                 var resultado = await clienteSupabase
                     .from("usuaris")
                     .insert([
                         {
+                            auth_id: registro.data.user.id, // <--- ¡AQUÍ ESTÁ LA CLAVE QUE FALTABA!
                             nombre: nombre,
                             apellidos: apellidos,
                             correo: correo,
@@ -53,10 +54,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 // 3. Comprobar si Supabase ha iniciado sesión automáticamente
                 if (registro.data.session) {
                     alert("¡Cuenta creada con éxito! Entrando en tu cuenta...");
-                    // Redirigir directamente sin pasar por el login
                     window.location.href = "index.html"; 
                 } else {
-                    // Si tu proyecto de Supabase exige confirmación por correo obligatorio
                     alert("Cuenta creada correctamente. Revisa tu correo electrónico para confirmar el registro antes de iniciar sesión.");
                     if (botonLogin) botonLogin.click();
                 }
@@ -67,9 +66,10 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
     // INICIO DE SESIÓN
     if (formularioLogin) {
-        formularioLogin.addEventListener("submit", async function(event) {
+        formularioLogin.addEventListener("submit", async function5 = async function(event) {
             event.preventDefault();
 
             var correo = document.getElementById("correoLogin").value;
@@ -88,7 +88,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 alert("Has iniciado sesión correctamente.");
                 formularioLogin.reset();
 
-                // Redirigir a la página principal
                 window.location.href = "index.html";
 
             } catch (error) {
