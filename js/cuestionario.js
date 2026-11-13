@@ -1,143 +1,126 @@
-// =====================================================
-// cuestionario.js
-// 1) Muestra el progreso del cuestionario (barra, contador y bloques completos).
-// 2) Al enviar: guarda las respuestas en la tabla "cuestionarios"
-//    de Supabase y después abre resultado.html.
-// Necesita que antes se hayan cargado supabase-config.js y proteger.js
-// =====================================================
-document.addEventListener("DOMContentLoaded", function () {
-    var formulario = document.getElementById("formularioCuestionario");
-    if (!formulario) return;
+document.addEventListener("DOMContentLoaded", function() {
+    // Recoger el formulario dentro del evento para asegurar que ya existe en el DOM
+    var formularioCuestionario = document.getElementById("formularioCuestionario");
 
-    // ---------- PROGRESO ----------
-
-    // Barra fina arriba y contador flotante abajo a la derecha
-    var barra = document.createElement("div");
-    barra.className = "progreso";
-    barra.setAttribute("aria-hidden", "true");
-    var relleno = document.createElement("span");
-    barra.appendChild(relleno);
-
-    var contador = document.createElement("div");
-    contador.className = "contador";
-    contador.setAttribute("role", "status");
-    contador.setAttribute("aria-live", "polite");
-
-    document.body.appendChild(barra);
-    document.body.appendChild(contador);
-
-    // Agrupa los campos obligatorios por nombre (un grupo = una pregunta)
-    function preguntasObligatorias(contenedor) {
-        var grupos = {};
-        contenedor.querySelectorAll("[required]").forEach(function (campo) {
-            if (!grupos[campo.name]) grupos[campo.name] = [];
-            grupos[campo.name].push(campo);
-        });
-        return Object.keys(grupos).map(function (nombre) { return grupos[nombre]; });
+    if (!formularioCuestionario) {
+        return; // Si no estamos en la página del cuestionario, salimos para evitar errores
     }
 
-    // Una pregunta está respondida si hay algo marcado o escrito
-    function estaRespondida(campos) {
-        return campos.some(function (campo) {
-            if (campo.type === "radio" || campo.type === "checkbox") return campo.checked;
-            return campo.value.trim() !== "";
-        });
-    }
-
-    function actualizarProgreso() {
-        var preguntas = preguntasObligatorias(formulario);
-        var respondidas = preguntas.filter(estaRespondida).length;
-        var total = preguntas.length;
-        var porcentaje = total ? Math.round((respondidas / total) * 100) : 0;
-
-        relleno.style.width = porcentaje + "%";
-
-        if (respondidas === total && total > 0) {
-            contador.textContent = "¡Todo listo! ✓";
-            contador.classList.add("listo");
-        } else {
-            contador.textContent = respondidas + " de " + total + " preguntas";
-            contador.classList.remove("listo");
-        }
-
-        // Marca como "completo" cada bloque con todas sus preguntas obligatorias respondidas
-        formulario.querySelectorAll("fieldset").forEach(function (bloque) {
-            var delBloque = preguntasObligatorias(bloque);
-            var completo = delBloque.length > 0 && delBloque.every(estaRespondida);
-            bloque.classList.toggle("completo", completo);
-        });
-    }
-
-    formulario.addEventListener("input", actualizarProgreso);
-    formulario.addEventListener("change", actualizarProgreso);
-    // El evento "reset" salta antes de vaciar los campos, por eso el pequeño retraso
-    formulario.addEventListener("reset", function () {
-        setTimeout(actualizarProgreso, 0);
-    });
-    actualizarProgreso();
-
-    // ---------- ENVÍO ----------
-
-    formulario.addEventListener("submit", async function (event) {
-        // Evitamos el envío normal para guardar primero en la base de datos
+    // Cuando se envíe el cuestionario
+    formularioCuestionario.addEventListener("submit", async function(event) {
+        // Evitar que se recargue la página
         event.preventDefault();
 
-        var boton = formulario.querySelector('button[type="submit"]');
-        boton.disabled = true;
-
-        var datos = new FormData(formulario);
-
         try {
-            // 1. Quién ha iniciado sesión
-            var sesion = await clienteSupabase.auth.getSession();
-            var usuario = sesion.data.session && sesion.data.session.user;
+            // 1. Comprobar qué usuario ha iniciado sesión
+            var resultadoUsuario = await clienteSupabase.auth.getUser();
+
+            if (resultadoUsuario.error) {
+                throw resultadoUsuario.error;
+            }
+
+            var usuario = resultadoUsuario.data.user;
 
             if (!usuario) {
-                window.location.replace("login.html");
+                alert("Tienes que iniciar sesión para rellenar el cuestionario.");
+                window.location.href = "login.html";
                 return;
             }
 
-            // 2. Qué fila de "usuaris" es la suya
-            var fila = await clienteSupabase
+            // 2. Buscar o crear el ID del usuario en la tabla usuaris
+            var perfil = await clienteSupabase
                 .from("usuaris")
                 .select("id")
                 .eq("auth_id", usuario.id)
-                .single();
+                .maybeSingle();
 
-            if (fila.error) {
-                throw new Error("No encontramos tu perfil de usuario. Cierra sesión y vuelve a entrar.");
+            if (perfil.error) {
+                throw perfil.error;
             }
 
-            // 3. Guardar el cuestionario
-            var guardado = await clienteSupabase
+            var idUsuario;
+
+            // Si el usuario no tiene fila en la tabla 'usuaris', la creamos al vuelo asignando un nombre por defecto
+            if (!perfil.data) {
+                var nombrePorDefecto = usuario.email ? usuario.email.split('@')[0] : "Usuario";
+
+                var nuevoPerfil = await clienteSupabase
+                    .from("usuaris")
+                    .insert([{ 
+                        auth_id: usuario.id,
+                        nombre: nombrePorDefecto
+                    }])
+                    .select("id")
+                    .single();
+
+                if (nuevoPerfil.error) {
+                    throw nuevoPerfil.error;
+                }
+                idUsuario = nuevoPerfil.data.id;
+            } else {
+                idUsuario = perfil.data.id;
+            }
+
+            // 3. Recoger las respuestas del formulario de forma segura
+            var estudiosInput = formularioCuestionario.querySelector('input[name="estudios"]:checked');
+            var estudios = estudiosInput ? estudiosInput.value : "";
+
+            var titulo = document.getElementById("titulo").value;
+
+            var formacion = Array.from(
+                formularioCuestionario.querySelectorAll('input[name="formacion"]:checked')
+            ).map(function(opcion) {
+                return opcion.value;
+            });
+
+            var ingles = document.getElementById("ingles").value;
+            var pais = document.getElementById("pais").value;
+
+            var tiempoInput = formularioCuestionario.querySelector('input[name="tiempo"]:checked');
+            var tiempo = tiempoInput ? tiempoInput.value : "";
+
+            var modalidadInput = formularioCuestionario.querySelector('input[name="modalidad"]:checked');
+            var modalidad = modalidadInput ? modalidadInput.value : "";
+
+            var jornadaInput = formularioCuestionario.querySelector('input[name="jornada"]:checked');
+            var jornada = jornadaInput ? jornadaInput.value : "";
+
+            var area = Array.from(
+                formularioCuestionario.querySelectorAll('input[name="area"]:checked')
+            ).map(function(opcion) {
+                return opcion.value;
+            });
+
+            var comentarios = document.getElementById("comentarios").value;
+
+            // 4. Guardar las respuestas en Supabase
+            var resultado = await clienteSupabase
                 .from("cuestionarios")
                 .insert([{
-                    usuario_id: fila.data.id,
-                    estudios: datos.get("estudios"),
-                    titulo: datos.get("titulo") || null,
-                    formacion: datos.getAll("formacion"),
-                    ingles: datos.get("ingles"),
-                    pais: datos.get("pais"),
-                    tiempo: datos.get("tiempo"),
-                    modalidad: datos.get("modalidad"),
-                    jornada: datos.get("jornada"),
-                    area: datos.getAll("area"),
-                    comentarios: datos.get("comentarios") || null,
-                    ue: datos.get("ue")
+                    usuario_id: idUsuario,
+                    estudios: estudios,
+                    titulo: titulo,
+                    formacion: formacion,
+                    ingles: ingles,
+                    pais: pais,
+                    tiempo: tiempo,
+                    modalidad: modalidad,
+                    jornada: jornada,
+                    area: area,
+                    comentarios: comentarios
                 }]);
 
-            if (guardado.error) {
-                throw guardado.error;
+            if (resultado.error) {
+                throw resultado.error;
             }
 
-            // 4. Abrir el resultado con las respuestas en la dirección
-            var parametros = new URLSearchParams(datos);
-            window.location.href = "resultado.html?" + parametros.toString();
+            // 5. Avisar de que se ha guardado correctamente y redirigir
+            alert("¡Cuestionario guardado correctamente!");
+            window.location.href = "resultado.html";
 
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error al guardar el cuestionario:", error);
             alert("No se ha podido guardar el cuestionario: " + error.message);
-            boton.disabled = false;
         }
     });
 });
