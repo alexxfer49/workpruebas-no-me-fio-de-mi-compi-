@@ -1,15 +1,27 @@
-/* Estilos de resultado.html.
-   Usan colores heredados (currentColor) para no chocar con css/styles.css. */
+/* Estilos de resultado.html. Usa las variables de css/styles.css.
+   Carga este archivo DESPUÉS de styles.css y cuestionario.css. */
 
+.pagina section > h2 {
+    color: var(--navy);
+}
+
+/* Resumen de respuestas */
 .resumen {
     display: grid;
     grid-template-columns: max-content 1fr;
-    gap: 0.4rem 1.2rem;
+    gap: .5rem 1.25rem;
     margin: 0 0 2rem;
+    padding: 1.25rem 1.5rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--blue);
+    border-radius: var(--r);
+    box-shadow: 0 4px 16px rgba(3, 39, 65, .08);
 }
 
 .resumen dt {
     font-weight: 700;
+    color: var(--navy);
 }
 
 .resumen dd {
@@ -17,68 +29,84 @@
     overflow-wrap: anywhere;
 }
 
+/* Aviso para ciudadanos de la UE */
 .aviso {
-    border: 2px solid currentColor;
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
     margin-bottom: 2rem;
+    padding: 1.25rem 1.5rem;
+    background: #E3F3EA;
+    border: 2px solid var(--green);
+    border-radius: var(--r);
+    color: var(--navy);
 }
 
 .aviso[hidden] {
     display: none;
 }
 
+.aviso h2 {
+    margin-top: 0;
+    color: var(--green);
+}
+
+/* Tarjetas de visado */
 .visado {
-    border: 1px solid rgba(128, 128, 128, 0.45);
-    border-left-width: 6px;
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
     margin-bottom: 1rem;
+    padding: 1.1rem 1.5rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--green);
+    border-radius: var(--r);
+    box-shadow: 0 4px 16px rgba(3, 39, 65, .06);
 }
 
 .visado h3 {
-    margin-top: 0;
+    margin: 0 0 .4rem;
+    color: var(--navy);
 }
 
-.visado.noEncaja {
-    opacity: 0.7;
-    border-left-style: dashed;
+.visado p {
+    margin: .4rem 0;
 }
 
 .visado .requisitos {
-    font-size: 0.95em;
+    color: var(--mut);
+    font-size: .95rem;
 }
 
 .visado .etiqueta {
-    font-weight: 700;
     margin-bottom: 0;
+    font-weight: 700;
+    color: var(--green);
+}
+
+/* Las que piden más estudios: más apagadas */
+.visado.noEncaja {
+    background: #f1f5f9;
+    border-left: 6px dashed var(--line);
+    box-shadow: none;
+}
+
+.visado.noEncaja .etiqueta {
+    color: var(--mut);
 }
 
 .fuente {
     margin-top: 1.5rem;
+    color: var(--mut);
     overflow-wrap: anywhere;
 }
 
-.boton-enlace {
-    display: inline-block;
-    padding: 0.6rem 1.2rem;
-    border: 2px solid currentColor;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 700;
-}
-
-.boton-enlace:focus-visible {
-    outline: 3px solid currentColor;
-    outline-offset: 3px;
+.fuente a {
+    color: var(--blue);
 }
 
 @media (max-width: 600px) {
     .resumen {
         grid-template-columns: 1fr;
+        gap: .15rem;
     }
 
     .resumen dd {
-        margin-bottom: 0.6rem;
+        margin-bottom: .6rem;
     }
 }
