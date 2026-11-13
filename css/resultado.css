@@ -1,42 +1,63 @@
 /* Estilos de resultado.html. Usa las variables de css/styles.css.
-   Carga este archivo DESPUÉS de styles.css y cuestionario.css. */
+   Carga este archivo DESPUÉS de styles.css y cuestionario.css
+   (de ahí vienen las animaciones "subir" y "pop", la banda y los botones). */
 
 .pagina section > h2 {
     color: var(--navy);
+    animation: subir .5s ease both;
 }
 
-/* Resumen de respuestas */
+/* ---------- Resumen de respuestas ---------- */
 .resumen {
     display: grid;
     grid-template-columns: max-content 1fr;
-    gap: .5rem 1.25rem;
-    margin: 0 0 2rem;
-    padding: 1.25rem 1.5rem;
+    column-gap: 1.5rem;
+    margin: 0 0 2.25rem;
+    padding: .75rem 1.5rem;
     background: #fff;
     border: 1px solid var(--line);
     border-top: 4px solid var(--blue);
     border-radius: var(--r);
     box-shadow: 0 4px 16px rgba(3, 39, 65, .08);
+    animation: subir .55s .05s ease both;
+}
+
+.resumen dt,
+.resumen dd {
+    padding: .6rem 0;
+    border-bottom: 1px dashed var(--line);
+}
+
+.resumen dt:nth-last-child(2),
+.resumen dd:last-child {
+    border-bottom: none;
 }
 
 .resumen dt {
+    align-self: center;
+    font-size: .8rem;
     font-weight: 700;
-    color: var(--navy);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--mut);
 }
 
 .resumen dd {
     margin: 0;
+    font-weight: 600;
+    color: var(--navy);
     overflow-wrap: anywhere;
 }
 
-/* Aviso para ciudadanos de la UE */
+/* ---------- Aviso para ciudadanos de la UE ---------- */
 .aviso {
     margin-bottom: 2rem;
-    padding: 1.25rem 1.5rem;
-    background: #E3F3EA;
+    padding: 1.4rem 1.6rem;
+    background: linear-gradient(135deg, #E3F3EA, #F1FAF5);
     border: 2px solid var(--green);
     border-radius: var(--r);
     color: var(--navy);
+    animation: subir .55s .1s ease both;
 }
 
 .aviso[hidden] {
@@ -45,18 +66,49 @@
 
 .aviso h2 {
     margin-top: 0;
-    color: var(--green);
+    color: #0b7a54;
 }
 
-/* Tarjetas de visado */
+.aviso h2::before {
+    content: "✓";
+    display: inline-grid;
+    place-content: center;
+    width: 1.6em;
+    height: 1.6em;
+    margin-right: .5rem;
+    background: #0b7a54;
+    color: #fff;
+    border-radius: 50%;
+    font-size: .8em;
+    animation: pop .5s .4s ease both;
+}
+
+/* ---------- Tarjetas de visado ---------- */
 .visado {
     margin-bottom: 1rem;
-    padding: 1.1rem 1.5rem;
+    padding: 1.2rem 1.6rem;
     background: #fff;
     border: 1px solid var(--line);
     border-left: 6px solid var(--green);
     border-radius: var(--r);
     box-shadow: 0 4px 16px rgba(3, 39, 65, .06);
+    animation: subir .55s ease both;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+
+/* Cada tarjeta entra un poco después de la anterior */
+.visado:nth-child(2) { animation-delay: .08s; }
+.visado:nth-child(3) { animation-delay: .16s; }
+.visado:nth-child(4) { animation-delay: .24s; }
+.visado:nth-child(5) { animation-delay: .32s; }
+
+.visado:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(3, 39, 65, .15);
+}
+
+.visado.encaja:hover {
+    border-left-color: var(--lime);
 }
 
 .visado h3 {
@@ -73,21 +125,41 @@
     font-size: .95rem;
 }
 
+/* Etiqueta con icono ("/ ''" evita que el lector de pantalla lea el símbolo) */
 .visado .etiqueta {
-    margin-bottom: 0;
+    display: inline-block;
+    margin: .6rem 0 0;
+    padding: .3rem .85rem;
+    font-size: .88rem;
     font-weight: 700;
-    color: var(--green);
+    border-radius: 99px;
+}
+
+.visado.encaja .etiqueta {
+    background: #E3F3EA;
+    color: #0b7a54;
+}
+
+.visado.encaja .etiqueta::before {
+    content: "✓ ";
+    content: "✓ " / "";
 }
 
 /* Las que piden más estudios: más apagadas */
 .visado.noEncaja {
     background: #f1f5f9;
-    border-left: 6px dashed var(--line);
+    border-left: 6px dashed #94a3b8;
     box-shadow: none;
 }
 
 .visado.noEncaja .etiqueta {
-    color: var(--mut);
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.visado.noEncaja .etiqueta::before {
+    content: "↑ ";
+    content: "↑ " / "";
 }
 
 .fuente {
@@ -97,16 +169,36 @@
 }
 
 .fuente a {
-    color: var(--blue);
+    color: #0a6f96;
+    font-weight: 600;
+}
+
+.fuente a:hover {
+    color: var(--navy);
+}
+
+/* Botón de repetir, debajo de todo */
+.pagina .botones {
+    margin-top: 2.5rem;
+    animation: subir .55s .3s ease both;
 }
 
 @media (max-width: 600px) {
     .resumen {
         grid-template-columns: 1fr;
-        gap: .15rem;
+        padding: .5rem 1.1rem;
     }
 
-    .resumen dd {
-        margin-bottom: .6rem;
+    .resumen dt {
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .resumen dt:nth-last-child(2) {
+        border-bottom: none;
+    }
+
+    .visado:hover {
+        transform: none;
     }
 }
