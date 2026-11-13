@@ -20,6 +20,33 @@ document.addEventListener("DOMContentLoaded", async function() {
             botonRegistro.classList.remove("activo");
         });
     }
+    document.addEventListener("DOMContentLoaded", function() {
+    var botonCerrarSesion = document.getElementById("botonCerrarSesion");
+
+    if (botonCerrarSesion) {
+        botonCerrarSesion.addEventListener("click", async function(event) {
+            event.preventDefault();
+
+            try {
+                // 1. Llamar a Supabase para cerrar la sesión activa
+                var { error } = await clienteSupabase.auth.signOut();
+
+                if (error) {
+                    throw error;
+                }
+
+                alert("Has cerrado sesión correctamente.");
+                
+                // 2. Redirigir al inicio o recargar la página
+                window.location.href = "index.html";
+
+            } catch (error) {
+                console.error("Error al cerrar sesión:", error);
+                alert("No se ha podido cerrar sesión: " + error.message);
+            }
+        });
+    }
+});
 
     // 2. Comprobar sesión para actualizar el menú superior en todas las páginas
     if (typeof clienteSupabase !== "undefined") {
@@ -67,5 +94,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
         });
     }
+        
 });
 });
