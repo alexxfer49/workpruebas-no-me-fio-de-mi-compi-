@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     .from("usuaris")
                     .insert([
                         {
-                            auth_id: registro.data.user.id, // <--- ¡AQUÍ ESTÁ LA CLAVE QUE FALTABA!
+                            auth_id: registro.data.user.id, // ¡Vincula perfectamente Supabase Auth con tu tabla!
                             nombre: nombre,
                             apellidos: apellidos,
                             correo: correo,
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // INICIO DE SESIÓN
     if (formularioLogin) {
-        formularioLogin.addEventListener("submit", async function5 = async function(event) {
+        formularioLogin.addEventListener("submit", async function(event) {
             event.preventDefault();
 
             var correo = document.getElementById("correoLogin").value;
