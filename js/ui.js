@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", async function() {
+document.addEventListener("DOMContentLoaded", function() {
+    
     // 1. Control de pestañas (Login / Registro en cuenta.html)
     var botonRegistro = document.getElementById("botonRegistro");
     var botonLogin = document.getElementById("botonLogin");
@@ -20,7 +21,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             botonRegistro.classList.remove("activo");
         });
     }
-    document.addEventListener("DOMContentLoaded", function() {
+
+    // 2. Funcionalidad del botón Cerrar Sesión
     var botonCerrarSesion = document.getElementById("botonCerrarSesion");
 
     if (botonCerrarSesion) {
@@ -28,7 +30,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             event.preventDefault();
 
             try {
-                // 1. Llamar a Supabase para cerrar la sesión activa
                 var { error } = await clienteSupabase.auth.signOut();
 
                 if (error) {
@@ -36,8 +37,6 @@ document.addEventListener("DOMContentLoaded", async function() {
                 }
 
                 alert("Has cerrado sesión correctamente.");
-                
-                // 2. Redirigir al inicio o recargar la página
                 window.location.href = "index.html";
 
             } catch (error) {
@@ -46,54 +45,58 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
         });
     }
-});
 
-    // 2. Comprobar sesión para actualizar el menú superior en todas las páginas
+    // 3. Comprobar sesión al cargar la página para actualizar el menú y elementos protegidos
     if (typeof clienteSupabase !== "undefined") {
-        try {
-            var { data: { session } } = await clienteSupabase.auth.getSession();
-            var enlaceNav = document.getElementById("enlaceAcceso");
-            var tileAcceso = document.getElementById("tileAcceso");
-
-            if (session) {
-                if (enlaceNav) {
-                    enlaceNav.href = "panel.html";
-                    enlaceNav.textContent = "👤 Mi Perfil";
-                }
-                if (tileAcceso) {
-                    tileAcceso.href = "panel.html";
-                    tileAcceso.innerHTML = "<i>👤</i>Mi Perfil";
-                }
-
-                // 3. Mostrar elementos con clase accesoDenegado cuando hay sesión
-                var elementosProtegidos = document.querySelectorAll(".accesoDenegado");
-                elementosProtegidos.forEach(function(elemento) {
-                    elemento.style.display = "inline-block"; // O "block" si es un contenedor grande
-                });
+        (async function() {
+            try {
+                var { data: { session } } = await clienteSupabase.auth.getSession();
+                actualizarInterfazSesion(session);
+            } catch (error) {
+                console.error("Error al comprobar la sesión:", error);
             }
-        } catch (error) {
-            console.error("Error al comprobar la sesión:", error);
-        }
-    }
-    document.addEventListener("DOMContentLoaded", function() {
-    if (typeof clienteSupabase !== "undefined") {
+        })();
+
+        // 4. Escuchar cambios de sesión en tiempo real (login / logout)
         clienteSupabase.auth.onAuthStateChange(function(evento, session) {
-            var elementosProtegidos = document.querySelectorAll(".accesoDenegado");
-
-            if (session) {
-                // SI HAY SESIÓN: Mostramos los elementos protegidos
-                elementosProtegidos.forEach(function(elemento) {
-                    var esBloque = elemento.tagName === "SECTION" || elemento.tagName === "DIV";
-                    elemento.style.setProperty("display", esBloque ? "block" : "inline-block", "important");
-                });
-            } else {
-                // SI NO HAY SESIÓN: Los mantenemos ocultos
-                elementosProtegidos.forEach(function(elemento) {
-                    elemento.style.setProperty("display", "none", "important");
-                });
-            }
+            actualizarInterfazSesion(session);
         });
     }
-        
+
 });
-});
+
+// Función auxiliar para mostrar/ocultar elementos según si hay sesión o no
+function actualizarInterfazSesion(session) {
+    var enlaceNav = document.getElementById("enlaceAcceso");
+    var tileAcceso = document.getElementById("tileAcceso");
+    var elementosProtegidos = document.querySelectorAll(".accesoDenegado");
+
+    if (session) {
+        if (enlaceNav) {
+            enlaceNav.href = "panel.html";
+            enlaceNav.textContent = "👤 Mi Perfil";
+        }
+        if (tileAcceso) {
+            tileAcceso.href = "panel.html";
+            tileAcceso.innerHTML = "<i>👤</i>Mi Perfil";
+        }
+
+        elementosProtegidos.forEach(function(elemento) {
+            var esBloque = elemento.tagName === "SECTION" || elemento.tagName === "DIV";
+            elemento.style.setProperty("display", esBloque ? "block" : "inline-block", "important");
+        });
+    } else {
+        if (enlaceNav) {
+            enlaceNav.href = "login.html";
+            enlaceNav.textContent = "👤 Entrar";
+        }
+        if (tileAcceso) {
+            tileAcceso.href = "login.html";
+            tileAcceso.innerHTML = "<i>👤</i>Mi cuenta";
+        }
+
+        elementosProtegidos.forEach(function(elemento) {
+            elemento.style.setProperty("display", "none", "important");
+        });
+    }
+}
