@@ -29,15 +29,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
             var idUsuario = perfil.id;
 
-            // 3. Recoger los datos del formulario (ajusta los nombres de tus campos si difieren)
+            // 3. Recoger los datos del formulario incluyendo el campo "tiempo"
             var estudiosInput = formularioCuestionario.querySelector('input[name="estudios"]:checked');
             var estudios = estudiosInput ? estudiosInput.value : "";
             var titulo = document.getElementById("titulo") ? document.getElementById("titulo").value : "";
             var ingles = document.getElementById("ingles") ? document.getElementById("ingles").value : "";
             var pais = document.getElementById("pais") ? document.getElementById("pais").value : "";
+            
+            // Recoger el valor del radio button "tiempo"
+            var tiempoInput = formularioCuestionario.querySelector('input[name="tiempo"]:checked');
+            var tiempo = tiempoInput ? tiempoInput.value : "";
+
             var comentarios = document.getElementById("comentarios") ? document.getElementById("comentarios").value : "";
 
-            // 4. Guardar en la tabla 'cuestionarios'
+            // Validación por si no marcan el tiempo
+            if (!tiempo) {
+                alert("Por favor, selecciona una opción en el campo de tiempo.");
+                return;
+            }
+
+            // 4. Guardar en la tabla 'cuestionarios' incluyendo el tiempo
             var { error: insertError } = await clienteSupabase
                 .from("cuestionarios")
                 .insert([{
@@ -46,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     titulo: titulo,
                     ingles: ingles,
                     pais: pais,
+                    tiempo: tiempo, // <--- ¡AQUÍ ESTÁ LA CLAVE QUE FALTABA!
                     comentarios: comentarios
                 }]);
 
