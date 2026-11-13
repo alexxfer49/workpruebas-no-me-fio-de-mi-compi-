@@ -29,26 +29,33 @@ document.addEventListener("DOMContentLoaded", function() {
 
             var idUsuario = perfil.id;
 
-            // 3. Recoger los datos del formulario incluyendo el campo "tiempo"
+            // 3. Recoger los datos del formulario
             var estudiosInput = formularioCuestionario.querySelector('input[name="estudios"]:checked');
             var estudios = estudiosInput ? estudiosInput.value : "";
             var titulo = document.getElementById("titulo") ? document.getElementById("titulo").value : "";
             var ingles = document.getElementById("ingles") ? document.getElementById("ingles").value : "";
             var pais = document.getElementById("pais") ? document.getElementById("pais").value : "";
             
-            // Recoger el valor del radio button "tiempo"
+            // Recoger campos obligatorios de radio
             var tiempoInput = formularioCuestionario.querySelector('input[name="tiempo"]:checked');
             var tiempo = tiempoInput ? tiempoInput.value : "";
 
+            var modalidadInput = formularioCuestionario.querySelector('input[name="modalidad"]:checked');
+            var modalidad = modalidadInput ? modalidadInput.value : "";
+
             var comentarios = document.getElementById("comentarios") ? document.getElementById("comentarios").value : "";
 
-            // Validación por si no marcan el tiempo
+            // Validaciones rápidas por si se deja algo obligatorio sin marcar
             if (!tiempo) {
                 alert("Por favor, selecciona una opción en el campo de tiempo.");
                 return;
             }
+            if (!modalidad) {
+                alert("Por favor, selecciona una modalidad de trabajo.");
+                return;
+            }
 
-            // 4. Guardar en la tabla 'cuestionarios' incluyendo el tiempo
+            // 4. Guardar en la tabla 'cuestionarios' incluyendo modalidad
             var { error: insertError } = await clienteSupabase
                 .from("cuestionarios")
                 .insert([{
@@ -57,7 +64,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     titulo: titulo,
                     ingles: ingles,
                     pais: pais,
-                    tiempo: tiempo, // <--- ¡AQUÍ ESTÁ LA CLAVE QUE FALTABA!
+                    tiempo: tiempo,
+                    modalidad: modalidad, // <--- ¡AQUÍ ESTÁ LA MODALIDAD AÑADIDA!
                     comentarios: comentarios
                 }]);
 
