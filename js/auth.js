@@ -96,4 +96,24 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+    var botonCerrarSesion = document.getElementById("botonCerrarSesion");
+
+if (botonCerrarSesion) {
+    botonCerrarSesion.addEventListener("click", async function() {
+        try {
+            var { error } = await clienteSupabase.auth.signOut();
+            
+            if (error) {
+                throw error;
+            }
+
+            alert("Has cerrado sesión correctamente.");
+            window.location.href = "index.html"; // Te devuelve a la página principal
+            
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+            alert("No se ha podido cerrar sesión: " + error.message);
+        }
+    });
+}
 });
