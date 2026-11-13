@@ -1,33 +1,95 @@
-
-/* Banda de título */
 /* Estilos del cuestionario (cuestionario.html).
    También los usa resultado.html (banda y botones).
    Usa las variables de css/styles.css: --navy, --blue, --green, --lime, --ink, --mut, --line, --r.
    Carga este archivo DESPUÉS de styles.css. */
 
-/* Banda de título, con el mismo degradado que la portada */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ---------- Animaciones ---------- */
+@keyframes subir {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes fluir {
+    from { background-position: 0 0, 0% 50%; }
+    to   { background-position: 0 0, 100% 50%; }
+}
+
+@keyframes flotar {
+    from { transform: translateY(0) scale(1); }
+    to   { transform: translateY(-18px) scale(1.06); }
+}
+
+@keyframes pop {
+    0%   { transform: scale(.6); }
+    60%  { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+/* ---------- Banda de título ---------- */
 .banda {
-    padding: 2.5rem 5vw;
+    position: relative;
+    overflow: hidden;
+    padding: 3rem 5vw;
     text-align: center;
     color: #fff;
     border-bottom: 4px solid var(--lime);
     background:
         radial-gradient(circle at 90% 10%, rgba(27, 163, 214, .5), transparent 45%),
         linear-gradient(135deg, var(--navy), var(--blue) 65%, var(--green));
+    background-size: 100% 100%, 200% 200%;
+    animation: fluir 14s ease-in-out infinite alternate;
+}
+
+/* Círculos decorativos que flotan */
+.banda::before,
+.banda::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .1);
+    animation: flotar 7s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+.banda::before {
+    width: 180px;
+    height: 180px;
+    left: -50px;
+    top: -60px;
+}
+
+.banda::after {
+    width: 120px;
+    height: 120px;
+    right: 8%;
+    bottom: -45px;
+    background: rgba(132, 204, 22, .25);
+    animation-delay: -3s;
+}
+
+.banda > * {
+    position: relative;
+    z-index: 1;
 }
 
 .banda h1 {
     margin: 0 0 .5rem;
-    font-size: clamp(1.7rem, 4vw, 2.4rem);
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    animation: subir .6s ease both;
 }
 
 .banda p {
     margin: 0 auto;
     max-width: 36em;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
+    animation: subir .6s .12s ease both;
 }
 
-/* Cada bloque del cuestionario */
+/* ---------- Bloques del cuestionario ---------- */
 fieldset {
     background: #fff;
     border: 1px solid var(--line);
@@ -36,9 +98,26 @@ fieldset {
     box-shadow: 0 4px 16px rgba(3, 39, 65, .08);
     padding: 1.25rem 1.5rem 1.5rem;
     margin: 0 0 1.75rem;
+    animation: subir .55s ease both;
+    transition: box-shadow .25s, border-color .25s;
 }
 
-/* Título de cada bloque, como una píldora del menú */
+fieldset:nth-of-type(2) { animation-delay: .08s; }
+fieldset:nth-of-type(3) { animation-delay: .16s; }
+fieldset:nth-of-type(4) { animation-delay: .24s; }
+
+/* El bloque donde estás escribiendo se destaca */
+fieldset:focus-within {
+    box-shadow: 0 10px 30px rgba(27, 163, 214, .22);
+    border-color: var(--blue);
+}
+
+/* Bloque completo (lo marca cuestionario.js) */
+fieldset.completo {
+    border-top-color: var(--green);
+}
+
+/* Título del bloque: píldora como las del menú */
 legend {
     padding: .35rem 1rem;
     background: var(--navy);
@@ -46,9 +125,20 @@ legend {
     font-weight: 700;
     font-size: .95rem;
     border-radius: 99px;
+    transition: background .3s;
 }
 
-/* Texto de cada pregunta */
+fieldset.completo legend {
+    background: #0b7a54;
+}
+
+fieldset.completo legend::after {
+    content: " ✓";
+    display: inline-block;
+    animation: pop .4s ease;
+}
+
+/* ---------- Preguntas y respuestas ---------- */
 .pregunta {
     margin: 1.4rem 0 .6rem;
     font-weight: 700;
@@ -59,36 +149,91 @@ fieldset .pregunta:first-of-type {
     margin-top: .9rem;
 }
 
-/* Cada respuesta (radio o casilla) */
+/* Cada respuesta es una tarjeta que se puede pulsar */
 .opcion {
-    display: block;
-    margin: .35rem 0;
-    padding: .55rem .9rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin: .4rem 0;
+    padding: .7rem .95rem;
+    background: #fff;
     border: 1px solid var(--line);
     border-radius: 10px;
     cursor: pointer;
-    transition: background .15s, border-color .15s;
+    transition: background .15s, border-color .15s, transform .15s, box-shadow .15s;
 }
 
 .opcion:hover {
-    background: #E3F3EA;
+    background: #F1FAF5;
     border-color: var(--green);
+    transform: translateX(4px);
 }
 
-/* Respuesta marcada */
+.opcion:active {
+    transform: translateX(4px) scale(.99);
+}
+
+/* Respuesta elegida */
 .opcion:has(input:checked) {
     background: #E3F3EA;
     border-color: var(--green);
+    box-shadow: inset 5px 0 0 var(--green);
     color: var(--navy);
     font-weight: 600;
 }
 
+/* Radios y casillas personalizados */
 .opcion input {
-    margin-right: .6rem;
-    accent-color: var(--green);
+    appearance: none;
+    -webkit-appearance: none;
+    flex: none;
+    display: inline-grid;
+    place-content: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    margin: 0;
+    background: #fff;
+    border: 2px solid #94a3b8;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
 }
 
-/* Campos de texto, listas y comentarios */
+.opcion input[type="checkbox"] {
+    border-radius: 6px;
+}
+
+.opcion input::before {
+    content: "";
+    width: .65rem;
+    height: .65rem;
+    border-radius: 50%;
+    background: var(--green);
+    transform: scale(0);
+    transition: transform .18s ease;
+}
+
+.opcion input[type="checkbox"]::before {
+    width: .8rem;
+    height: .8rem;
+    border-radius: 0;
+    background: #fff;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.opcion input:checked {
+    border-color: var(--green);
+}
+
+.opcion input[type="checkbox"]:checked {
+    background: var(--green);
+}
+
+.opcion input:checked::before {
+    transform: scale(1);
+}
+
+/* ---------- Campos de texto, listas y comentarios ---------- */
 fieldset label[for] {
     display: block;
     margin: 1.4rem 0 .45rem;
@@ -102,16 +247,35 @@ fieldset textarea {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    padding: .65rem .85rem;
+    padding: .7rem .9rem;
     font: inherit;
     color: var(--ink);
-    background: #fff;
+    background-color: #fff;
     border: 1px solid var(--line);
     border-radius: 10px;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+fieldset input[type="text"]:hover,
+fieldset select:hover,
+fieldset textarea:hover {
+    border-color: var(--blue);
+}
+
+fieldset select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 2.6rem;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23032741' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .9rem center;
+    background-size: 1rem;
 }
 
 fieldset textarea {
     resize: vertical;
+    min-height: 6rem;
 }
 
 fieldset input[type="text"]:focus,
@@ -119,18 +283,23 @@ fieldset select:focus,
 fieldset textarea:focus {
     outline: none;
     border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(27, 163, 214, .25);
+    box-shadow: 0 0 0 4px rgba(27, 163, 214, .25);
+}
+
+/* Aviso de campo mal rellenado (solo después de tocarlo) */
+fieldset input:user-invalid,
+fieldset select:user-invalid {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, .15);
 }
 
 /* Teclado: que se vea dónde estás */
-.opcion input:focus-visible,
-.botones button:focus-visible,
-.boton-enlace:focus-visible {
+.opcion input:focus-visible {
     outline: 3px solid var(--blue);
     outline-offset: 3px;
 }
 
-/* Botones */
+/* ---------- Botones ---------- */
 .botones {
     display: flex;
     flex-wrap: wrap;
@@ -140,8 +309,10 @@ fieldset textarea:focus {
 
 .botones button,
 .boton-enlace {
-    display: inline-block;
-    padding: .75rem 1.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .8rem 1.7rem;
     font: inherit;
     font-weight: 700;
     text-decoration: none;
@@ -150,14 +321,48 @@ fieldset textarea:focus {
     border: 2px solid var(--navy);
     border-radius: 99px;
     cursor: pointer;
-    transition: background .2s, border-color .2s, transform .2s;
+    transition: background .2s, border-color .2s, transform .2s, box-shadow .2s;
 }
 
 .botones button:hover,
 .boton-enlace:hover {
-    background: var(--blue);
-    border-color: var(--blue);
-    transform: translateY(-2px);
+    background: #0a6f96;
+    border-color: #0a6f96;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(3, 39, 65, .25);
+}
+
+.botones button:active,
+.boton-enlace:active {
+    transform: translateY(0) scale(.97);
+    box-shadow: none;
+}
+
+.botones button:disabled {
+    opacity: .6;
+    cursor: wait;
+    transform: none;
+}
+
+/* Flecha que se mueve al pasar el ratón */
+.botones button[type="submit"]::after {
+    content: "→";
+    display: inline-block;
+    transition: transform .2s;
+}
+
+.botones button[type="submit"]:hover::after {
+    transform: translateX(5px);
+}
+
+.boton-enlace::before {
+    content: "←";
+    display: inline-block;
+    transition: transform .2s;
+}
+
+.boton-enlace:hover::before {
+    transform: translateX(-5px);
 }
 
 .botones button.secundario {
@@ -169,5 +374,83 @@ fieldset textarea:focus {
 .botones button.secundario:hover {
     background: #E3F3EA;
     border-color: var(--green);
-    color: var(--green);
+    color: #0b7a54;
+    box-shadow: none;
+}
+
+.botones button:focus-visible,
+.boton-enlace:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 3px;
+}
+
+/* ---------- Progreso (lo crea cuestionario.js) ---------- */
+.progreso {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 30;
+    width: 100%;
+    height: 5px;
+    pointer-events: none;
+}
+
+.progreso span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--lime), var(--green));
+    border-radius: 0 99px 99px 0;
+    transition: width .45s ease;
+}
+
+.contador {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 30;
+    padding: .55rem 1.1rem;
+    background: var(--navy);
+    color: #fff;
+    font-size: .9rem;
+    font-weight: 700;
+    border-radius: 99px;
+    box-shadow: 0 6px 20px rgba(3, 39, 65, .3);
+    transition: background .3s, transform .3s;
+}
+
+.contador.listo {
+    background: #0b7a54;
+    animation: pop .45s ease;
+}
+
+/* ---------- Móvil ---------- */
+@media (max-width: 600px) {
+    fieldset {
+        padding: 1rem 1rem 1.25rem;
+    }
+
+    .opcion:hover {
+        transform: none;
+    }
+
+    .botones button,
+    .boton-enlace {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Si la persona prefiere menos movimiento, se quitan las animaciones */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition-duration: .01ms !important;
+    }
 }
