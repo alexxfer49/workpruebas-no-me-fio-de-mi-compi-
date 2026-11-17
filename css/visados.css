@@ -129,3 +129,23 @@
     .fila-visado { flex-direction: column; align-items: flex-start; }
     .fila-visado:hover { transform: none; }
 }
+
+/* ---------- Lista de vías posibles (resultado.html) ---------- */
+.fila-visado .ir {
+    flex: none;
+    font-weight: 700;
+    color: #0a6f96;
+    transition: transform .2s;
+}
+
+.fila-visado:hover .ir { transform: translateX(4px); }
+
+/* La fila del visado más recomendado destaca */
+.fila-visado.mejor {
+    background: linear-gradient(135deg, #F1FAF5, #fff 60%);
+    border: 2px solid var(--green);
+    border-left: 8px solid var(--lime);
+    box-shadow: 0 8px 24px rgba(13, 138, 95, .15);
+}
+
+.fila-visado .sello { margin-bottom: .4rem; }
