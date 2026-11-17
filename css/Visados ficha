@@ -1,0 +1,74 @@
+/* Ficha de visado (se apoya en cuestionario.css para cabecera y pie) */
+.contenedor-ficha { max-width: 950px; margin: 25px auto; padding: 0 15px; }
+
+/* Desplegables */
+.selectores {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.selectores label { margin-top: 0; }
+.selectores select {
+  width: 100%; padding: 10px; margin-top: 5px;
+  border: 1px solid #94a8a5; border-radius: 5px; font-size: 15px;
+  background-color: white;
+}
+
+/* Índice + ficha */
+.columnas { display: grid; grid-template-columns: 190px 1fr; gap: 20px; align-items: start; }
+
+.indice {
+  background-color: white; border: 1px solid #b7dcc4;
+  border-left: 4px solid #3aa561; border-radius: 8px;
+  padding: 12px 15px; position: sticky; top: 10px;
+}
+.indice p { margin: 0 0 8px 0; font-size: 14px; }
+.indice a { display: block; padding: 6px 0; font-size: 14px; color: #0b3d3a; text-decoration: none; }
+.indice a:hover { text-decoration: underline; }
+
+/* Tarjeta */
+.ficha {
+  background-color: white; border: 1px solid #d5e0de;
+  border-top: 4px solid #1b8fc7; border-radius: 8px; padding: 20px 25px;
+}
+.etiqueta {
+  display: inline-block; background-color: #dff3e6; color: #2a7a4b;
+  font-size: 12px; font-weight: bold; padding: 3px 10px; border-radius: 12px;
+}
+.ficha h1 { font-size: 24px; margin: 10px 0; color: #0b3d3a; }
+.ficha h2 { font-size: 18px; color: #0b3d3a; border-bottom: 2px solid #3aa561; padding-bottom: 5px; margin-top: 28px; }
+.ubicacion { color: #51635f; font-size: 14px; }
+
+/* Cuadros de datos */
+.datos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
+.dato {
+  background-color: #f1f7f4; border-left: 3px solid #3aa561;
+  border-radius: 6px; padding: 10px 12px; font-size: 14px;
+}
+.dato span { display: block; color: #51635f; font-size: 13px; margin-bottom: 4px; }
+.dato b { display: block; }
+
+/* Aviso naranja */
+.aviso-ficha {
+  background-color: #fdeccf; border-left: 4px solid #e9a13b;
+  border-radius: 6px; padding: 12px 15px; font-size: 14px;
+}
+
+.ficha ol { padding-left: 20px; }
+.ficha li { margin-bottom: 10px; }
+
+/* Botón de empezar */
+.empezar { margin-top: 28px; padding-top: 20px; border-top: 1px solid #d5e0de; text-align: center; }
+.boton-empezar {
+  display: inline-block; padding: 14px 28px; background-color: #e07a1f; color: white;
+  font-weight: bold; font-size: 16px; border-radius: 6px; text-decoration: none;
+}
+.boton-empezar:hover { background-color: #c0660f; }
+
+@media (max-width: 750px) {
+  .columnas { grid-template-columns: 1fr; }
+  .indice { position: static; }
+  .selectores { grid-template-columns: 1fr; }
+  .datos { grid-template-columns: 1fr 1fr; }
+}
