@@ -1,0 +1,84 @@
+/* Estilos de resultado.html.
+   Usan colores heredados (currentColor) para no chocar con css/styles.css. */
+
+.resumen {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.4rem 1.2rem;
+    margin: 0 0 2rem;
+}
+
+.resumen dt {
+    font-weight: 700;
+}
+
+.resumen dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.aviso {
+    border: 2px solid currentColor;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.aviso[hidden] {
+    display: none;
+}
+
+.visado {
+    border: 1px solid rgba(128, 128, 128, 0.45);
+    border-left-width: 6px;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.visado h3 {
+    margin-top: 0;
+}
+
+.visado.noEncaja {
+    opacity: 0.7;
+    border-left-style: dashed;
+}
+
+.visado .requisitos {
+    font-size: 0.95em;
+}
+
+.visado .etiqueta {
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.fuente {
+    margin-top: 1.5rem;
+    overflow-wrap: anywhere;
+}
+
+.boton-enlace {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border: 2px solid currentColor;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.boton-enlace:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+    .resumen {
+        grid-template-columns: 1fr;
+    }
+
+    .resumen dd {
+        margin-bottom: 0.6rem;
+    }
+}
