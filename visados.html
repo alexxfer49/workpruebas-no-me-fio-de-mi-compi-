@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="img/logo-icon.png">
+    <title>Visados de trabajo · WorkPath</title>
+
+    <!-- Oculta la página hasta comprobar que hay sesión (ver js/proteger.js) -->
+    <style>html { visibility: hidden; }</style>
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/cuestionario.css">
+    <link rel="stylesheet" href="css/visados.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/proteger.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/visados-datos.js"></script>
+    <script src="js/visados.js"></script>
+</head>
+
+<body>
+
+    <header class="top">
+        <a class="brand" href="index.html">
+            <img src="img/logo-icon.png" alt="Logo WorkPath">
+            <b>Work<span>Path</span></b>
+        </a>
+        <nav class="menu" aria-label="Apartados">
+            <a href="index.html">Inicio</a>
+            <a href="cuestionario.html">Cuestionario</a>
+            <a href="login.html" class="user" id="enlaceAcceso">👤 Mi Perfil</a>
+        </nav>
+    </header>
+
+    <section class="banda">
+        <h1 id="tituloPais">Visados de trabajo</h1>
+        <p id="subtituloPais">Todos los tipos de visado de trabajo del país que has elegido.</p>
+    </section>
+
+    <main class="pagina">
+        <p id="aviso-orientativo" class="nota">
+            Información orientativa. Las condiciones cambian con frecuencia: confirma siempre los datos en la fuente oficial.
+        </p>
+
+        <div id="listaVisados"></div>
+
+        <p id="fuente" class="fuente"></p>
+
+        <div class="botones">
+            <a href="#" id="volverResultado" class="boton-enlace">Volver a mi resultado</a>
+            <a href="cuestionario.html" class="boton-enlace claro">Repetir el cuestionario</a>
+        </div>
+    </main>
+
+    <footer>
+        WorkPath · Solo orienta. No tramita visados ni sustituye a una embajada, un abogado o un asesor.
+        Comprueba siempre la fuente oficial.
+    </footer>
+
+</body>
+
+</html>
