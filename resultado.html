@@ -1,73 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="img/logo-icon.png">
-    <title>Tu resultado · WorkPath</title>
-
-    <!-- Oculta la página hasta comprobar que hay sesión (ver js/proteger.js) -->
-    <style>html { visibility: hidden; }</style>
-
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/cuestionario.css">
-    <link rel="stylesheet" href="css/resultado.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/proteger.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/resultado.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resultado · WorkPath</title>
+  <link rel="stylesheet" href="cuestionario.css">
+  <link rel="stylesheet" href="visados-ficha.css">
+  <link rel="stylesheet" href="resultado.css">
 </head>
-
 <body>
 
-    <header class="top">
-        <a class="brand" href="index.html">
-            <img src="img/logo-icon.png" alt="Logo WorkPath">
-            <b>Work<span>Path</span></b>
-        </a>
-        <nav class="menu" aria-label="Apartados">
-            <a href="index.html">Inicio</a>
-            <a href="cuestionario.html">Cuestionario</a>
-            <a href="login.html" class="user" id="enlaceAcceso">👤 Mi Perfil</a>
-        </nav>
-    </header>
+  <header class="top">
+    <a class="brand" href="index.html">🧭 <b>Work<span>Path</span></b></a>
+    <nav class="menu" aria-label="Apartados">
+      <a href="index.html">Mis datos</a>
+      <a href="cuestionario.html">Cuestionario</a>
+      <a href="resultado.html" aria-current="page">Resultado</a>
+    </nav>
+  </header>
 
-    <section class="banda">
-        <h1>🧭 Tu resultado</h1>
-        <p id="subtitulo">Estas son las vías de visado que mejor encajan con lo que nos has contado.</p>
+  <section class="banda">
+    <h1>📋 Resultado</h1>
+    <p>Estas son las vías posibles según tus respuestas.</p>
+  </section>
+
+  <main class="contenedor-ficha">
+
+    <!-- RESUMEN DE RESPUESTAS -->
+    <fieldset>
+      <legend>Tus respuestas</legend>
+      <dl id="resumen"></dl>
+    </fieldset>
+
+    <!-- AVISO PARA CIUDADANOS DE LA UE -->
+    <div id="avisoUE" class="aviso" hidden></div>
+
+    <!-- VÍAS POSIBLES -->
+    <section id="vias">
+      <h2 id="tituloVias">Vías posibles</h2>
+
+      <div class="selectores un-selector">
+        <div>
+          <label for="selVisado">Elige el tipo de visado</label>
+          <select id="selVisado"></select>
+        </div>
+      </div>
+
+      <div class="columnas">
+        <nav class="indice" aria-label="En esta ficha">
+          <p>En esta ficha</p>
+          <a href="#documentos">Documentos necesarios</a>
+          <a href="#procedimiento">Procedimiento</a>
+          <a href="#validez">Validez del visado</a>
+          <a href="#masinfo">Más información</a>
+        </nav>
+
+        <article class="ficha" id="ficha"></article>
+      </div>
     </section>
 
-    <main class="pagina">
+    <p id="mensaje" class="error" hidden></p>
 
-        <!-- Resumen de lo que ha respondido -->
-        <section>
-            <h2>Tus respuestas</h2>
-            <dl id="resumen" class="resumen"></dl>
-        </section>
+    <p><a class="boton-enlace" href="cuestionario.html">← Repetir el cuestionario</a></p>
+  </main>
 
-        <!-- Aviso especial si tiene pasaporte de la UE y el destino es de la UE -->
-        <section id="avisoUE" class="aviso" hidden></section>
+  <footer>
+    WorkPath · Solo orienta. No tramita visados ni sustituye a una embajada, un abogado o un asesor.
+  </footer>
 
-        <!-- Opciones de visado -->
-        <section>
-            <h2 id="tituloOpciones">Vías posibles</h2>
-            <div id="opciones"></div>
-        </section>
-
-        <div class="botones">
-            <a href="cuestionario.html" class="boton-enlace">Repetir el cuestionario</a>
-        </div>
-
-    </main>
-
-    <footer>
-        WorkPath · Solo orienta. No tramita visados ni sustituye a una embajada, un abogado o un asesor.
-        Comprueba siempre la fuente oficial.
-    </footer>
-
+  <!-- EL ORDEN IMPORTA: primero los datos y después resultado.js -->
+  <script src="visados-ficha-datos.js"></script>
+  <script src="resultado.js"></script>
 </body>
-
 </html>
