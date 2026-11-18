@@ -1,6 +1,6 @@
 /* =====================================================
-   Estilos limpios y definitivos para la página de resultado
-   ================================================     */
+   ESTILOS COMPLETOS - PÁGINA DE RESULTADOS (WORKPATH)
+   ===================================================== */
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -9,10 +9,11 @@ body {
   margin: 0;
 }
 
+/* Listas y definiciones originales */
 dl { margin: 0; }
 dt { font-weight: bold; margin-top: 10px; color: #0b3d3a; }
 dd { margin: 2px 0 0 0; }
-
+ 
 .aviso {
   background-color: #e3f4e8; 
   border: 1px solid #7fbf91;
@@ -29,11 +30,49 @@ dd { margin: 2px 0 0 0; }
   color: #991b1b;
 }
 
+.un-selector { grid-template-columns: 1fr; }
+ 
+.sello { 
+  display: inline-block; 
+  background-color: #fdeccf; 
+  color: #a35a00;
+  font-size: 12px; 
+  font-weight: bold; 
+  padding: 3px 10px; 
+  border-radius: 12px; 
+  margin-left: 6px; 
+}
+ 
+.boton-enlace {
+  display: inline-block; 
+  margin-top: 15px; 
+  padding: 11px 22px;
+  background-color: #0b3d3a; 
+  color: white; 
+  font-weight: bold;
+  border-radius: 6px; 
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.boton-enlace.claro {
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+.boton-enlace:hover {
+  background-color: #062624;
+}
+
 #vias { 
   margin-top: 30px; 
 }
 
-/* ---------- 1. TARJETAS VISUALES SUPERIORES ---------- */
+
+/* =====================================================
+   1. TARJETAS VISUALES SUPERIORES (SELECCIÓN DE VISADOS)
+   ===================================================== */
+
 #gridTarjetasVisados {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -44,7 +83,7 @@ dd { margin: 2px 0 0 0; }
 #gridTarjetasVisados > div {
   background: #ffffff;
   border: 1px solid #cbd5e1;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 20px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -70,7 +109,11 @@ dd { margin: 2px 0 0 0; }
   line-height: 1.45;
 }
 
-/* ---------- 2. SELECTOR DESPLEGABLE ---------- */
+
+/* =====================================================
+   2. SELECTOR DESPLEGABLE
+   ===================================================== */
+
 .selectores {
   margin-bottom: 25px;
 }
@@ -84,9 +127,20 @@ dd { margin: 2px 0 0 0; }
   background-color: #fff;
   font-size: 1rem;
   color: #1e293b;
+  transition: border-color 0.2s;
 }
 
-/* ---------- 3. DISTRIBUCIÓN DE COLUMNAS (ÍNDICE + FICHA) ---------- */
+.selectores select:focus {
+  outline: none;
+  border-color: #0b3d3a;
+  box-shadow: 0 0 0 3px rgba(11, 61, 58, 0.15);
+}
+
+
+/* =====================================================
+   3. DISTRIBUCIÓN DE COLUMNAS (ÍNDICE + FICHA)
+   ===================================================== */
+
 .columnas {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -104,7 +158,7 @@ dd { margin: 2px 0 0 0; }
 .indice {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 20px;
   position: sticky;
   top: 20px;
@@ -136,13 +190,18 @@ dd { margin: 2px 0 0 0; }
   padding-left: 4px;
 }
 
-/* ---------- 4. DISEÑO DE LA FICHA DETALLADA ---------- */
+
+/* =====================================================
+   4. TARJETA DETALLADA DE LA FICHA DE VISADO
+   ===================================================== */
+
 .ficha {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  padding: 35px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+  margin-top: 0 !important;
 }
 
 .ficha .etiqueta {
@@ -158,111 +217,74 @@ dd { margin: 2px 0 0 0; }
 }
 
 .ficha h1 {
-  font-size: 1.8rem;
-  color: #0b3d3a;
-  margin: 0 0 8px 0;
+  font-size: 2rem !important;
+  color: #0b3d3a !important;
+  font-weight: 800 !important;
+  margin: 0 0 6px 0 !important;
+  letter-spacing: -0.025em;
 }
 
 .ficha .ubicacion {
-  color: #64748b;
-  font-weight: 500;
-  margin-bottom: 20px;
-  font-size: 0.95rem;
+  color: #64748b !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 20px !important;
 }
 
-/* Cuadro de datos clave (Tasas, plazos, validez) */
+/* Sub-tarjetas internas para datos clave (Tasas, Plazos, Validez) */
 .ficha .datos {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 20px 0;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+  gap: 14px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  margin: 25px 0 !important;
+}
+
+.ficha .dato {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 .ficha .dato span {
-  display: block;
-  font-size: 0.8rem;
-  color: #64748b;
-  text-transform: uppercase;
-  margin-bottom: 4px;
+  display: block !important;
+  font-size: 0.75rem !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px !important;
 }
 
 .ficha .dato b {
-  font-size: 0.95rem;
-  color: #0f172a;
+  font-size: 1rem !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
 }
 
+/* Aviso destacado dentro de la ficha */
 .ficha .aviso-ficha {
-  background: #fffbeb;
-  border-left: 4px solid #f59e0b;
-  padding: 12px 16px;
-  border-radius: 0 6px 6px 0;
-  font-size: 0.9rem;
-  color: #92400e;
-  margin: 20px 0;
+  background: #fffbeb !important;
+  border-left: 4px solid #f59e0b !important;
+  padding: 16px 20px !important;
+  border-radius: 0 8px 8px 0 !important;
+  font-size: 0.95rem !important;
+  color: #92400e !important;
+  margin: 25px 0 !important;
+  line-height: 1.5;
 }
 
+/* Títulos de secciones secundarias (Documentos, Procedimiento) */
 .ficha h2 {
-  font-size: 1.25rem;
-  color: #0b3d3a;
-  margin-top: 30px;
-  margin-bottom: 12px;
-  border-bottom: 2px solid #f1f5f9;
-  padding-bottom: 6px;
-}
-
-.ficha ol {
-  padding-left: 20px;
-  color: #334155;
-  line-height: 1.6;
-}
-
-.ficha li {
-  margin-bottom: 8px;
-}
-
-/* Botón de empezar */
-.ficha .empezar {
-  margin-top: 30px;
-  text-align: right;
-}
-
-.ficha .boton-empezar {
-  display: inline-block;
-  background-color: #0b3d3a;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-weight: bold;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.ficha .boton-empezar:hover {
-  background-color: #062624;
-}
-
-/* Botones inferiores generales */
-.boton-enlace {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 11px 22px;
-  background-color: #0b3d3a;
-  color: white;
-  font-weight: bold;
-  border-radius: 6px;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.boton-enlace.claro {
-  background-color: #e2e8f0;
-  color: #334155;
-}
-
-.boton-enlace:hover {
-  opacity: 0.9;
-}
+  font-size: 1.25rem !important;
+  color: #0b3d3a !important;
+  font-weight: 700 !important;
+  margin-top: 35px !important;
+  margin-bottom: 15px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 2px solid #f1f5f9 !important
