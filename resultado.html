@@ -3,19 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="img/logo-icon.png">
   <title>Resultado · WorkPath</title>
-  <link rel="stylesheet" href="cuestionario.css">
-  <link rel="stylesheet" href="visados-ficha.css">
-  <link rel="stylesheet" href="resultado.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/cuestionario.css">
+  <link rel="stylesheet" href="css/visados-ficha.css">
+  <link rel="stylesheet" href="css/resultado.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/ui.js"></script>
 </head>
 <body>
 
   <header class="top">
-    <a class="brand" href="index.html">🧭 <b>Work<span>Path</span></b></a>
+    <a class="brand" href="index.html">
+      <img src="img/logo-icon.png" alt="Logo WorkPath">
+      <b>Work<span>Path</span></b>
+    </a>
     <nav class="menu" aria-label="Apartados">
-      <a href="index.html">Mis datos</a>
+      <a href="index.html">Inicio</a>
       <a href="cuestionario.html">Cuestionario</a>
       <a href="resultado.html" aria-current="page">Resultado</a>
+      <a href="login.html" class="user" id="enlaceAcceso">👤 Mi Perfil</a>
     </nav>
   </header>
 
@@ -65,11 +74,11 @@
   </main>
 
   <footer>
-    WorkPath · Solo orienta. No tramita visados ni sustituye a una embajada, un abogado o un asesor.
+    WorkPath · Solo orienta. No tramita visados ni sustituye a una embajada, un abogado o un asesor. Comprueba siempre la fuente oficial.
   </footer>
 
   <!-- EL ORDEN IMPORTA: primero los datos y después resultado.js -->
-  <script src="visados-ficha-datos.js"></script>
-  <script src="resultado.js"></script>
+  <script src="js/visados-ficha-datos.js"></script>
+  <script src="js/resultado.js"></script>
 </body>
 </html>
