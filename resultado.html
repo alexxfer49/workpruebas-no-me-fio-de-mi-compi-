@@ -12,8 +12,8 @@
 
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/cuestionario.css">
-    <link rel="stylesheet" href="css/visados.css">
     <link rel="stylesheet" href="css/resultado.css">
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/proteger.js"></script>
@@ -43,26 +43,28 @@
 
     <main class="pagina">
         <!-- RESUMEN DE RESPUESTAS -->
-        <fieldset style="margin-bottom: 2rem; padding: 1rem; border: 1px solid #ccc; border-radius: 6px;">
-            <legend style="font-weight: bold; padding: 0 10px;">Tus respuestas</legend>
+        <fieldset style="margin-bottom: 2rem; padding: 1.25rem; border: 1px solid #cbd5e1; border-radius: 10px; background: #fff;">
+            <legend style="font-weight: bold; padding: 0 10px; color: #0b3d3a;">Tus respuestas</legend>
             <dl id="resumen" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 0;"></dl>
         </fieldset>
 
         <!-- AVISO PARA CIUDADANOS DE LA UE -->
-        <div id="avisoUE" class="aviso" hidden style="background: #eef6ff; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem;"></div>
+        <div id="avisoUE" class="aviso" hidden></div>
 
         <!-- VÍAS POSIBLES -->
         <section id="vias">
-            <h2 id="tituloVias">Vías posibles</h2>
+            <h2 id="tituloVias" style="color: #0b3d3a; margin-bottom: 1rem;">Vías posibles</h2>
 
-            <div class="selectores un-selector" style="margin-bottom: 1.5rem;">
+            <!-- Aquí se inyectan dinámicamente las tarjetas superiores desde JavaScript -->
+
+            <div class="selectores un-selector">
                 <div>
-                    <label for="selVisado" style="font-weight: bold; display: block; margin-bottom: 0.5rem;">Elige el tipo de visado</label>
-                    <select id="selVisado" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></select>
+                    <label for="selVisado" style="font-weight: bold; display: block; margin-bottom: 0.5rem; color: #334155;">O filtrar por tipo de visado:</label>
+                    <select id="selVisado"></select>
                 </div>
             </div>
 
-            <div class="columnas">
+            <div class="columnas" style="margin-top: 2rem;">
                 <nav class="indice" aria-label="En esta ficha">
                     <p>En esta ficha</p>
                     <a href="#documentos">Documentos necesarios</a>
@@ -71,13 +73,13 @@
                     <a href="#masinfo">Más información</a>
                 </nav>
 
-                <article class="ficha" id="ficha" style="background: #fff; padding: 1.5rem; border-radius: 6px; border: 1px solid #ddd;"></article>
+                <article class="ficha" id="ficha"></article>
             </div>
         </section>
 
-        <p id="mensaje" class="error" hidden style="color: red; font-weight: bold; margin-top: 1rem;"></p>
+        <p id="mensaje" class="error" hidden></p>
 
-        <div class="botones" style="margin-top: 2rem; display: flex; gap: 1rem;">
+        <div class="botones" style="margin-top: 2.5rem;">
             <a href="cuestionario.html" class="boton-enlace claro">Repetir el cuestionario</a>
         </div>
     </main>
