@@ -1,57 +1,54 @@
 /* =====================================================
-   Estilos de la página de resultado (Unificados y mejorados)
-   ===================================================== */
+   Estilos limpios y definitivos para la página de resultado
+   ================================================     */
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1e293b;
+  background-color: #f8fafc;
+  margin: 0;
+}
 
 dl { margin: 0; }
 dt { font-weight: bold; margin-top: 10px; color: #0b3d3a; }
 dd { margin: 2px 0 0 0; }
- 
+
 .aviso {
-  background-color: #e3f4e8; border: 1px solid #7fbf91;
-  border-radius: 8px; padding: 5px 20px 15px 20px; margin-bottom: 20px;
-}
- 
-.un-selector { grid-template-columns: 1fr; }
- 
-.sello { 
-  display: inline-block; background-color: #fdeccf; color: #a35a00;
-  font-size: 12px; font-weight: bold; padding: 3px 10px; border-radius: 12px; margin-left: 6px; 
-}
- 
-.boton-enlace {
-  display: inline-block; margin-top: 15px; padding: 11px 22px;
-  background-color: #0b3d3a; color: white; font-weight: bold;
-  border-radius: 5px; text-decoration: none;
-  transition: background-color 0.2s;
+  background-color: #e3f4e8; 
+  border: 1px solid #7fbf91;
+  border-radius: 8px; 
+  padding: 15px 20px; 
+  margin-bottom: 20px;
 }
 
-.boton-enlace:hover {
-  background-color: #062624;
+.error { 
+  background-color: #fdecea; 
+  border: 1px solid #e5a29b; 
+  border-radius: 8px; 
+  padding: 12px 16px; 
+  color: #991b1b;
 }
 
-.error { background-color: #fdecea; border: 1px solid #e5a29b; border-radius: 8px; padding: 12px 16px; }
-#vias { margin-top: 25px; }
+#vias { 
+  margin-top: 30px; 
+}
 
-
-/* =====================================================
-   Tarjetas visuales de selección de visados (NUEVO)
-   ================================================     */
-
+/* ---------- 1. TARJETAS VISUALES SUPERIORES ---------- */
 #gridTarjetasVisados {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
-  margin: 1.5rem 0 2rem 0;
+  margin: 20px 0 30px 0;
 }
 
 #gridTarjetasVisados > div {
   background: #ffffff;
-  border: 1px solid #d8dee4;
+  border: 1px solid #cbd5e1;
   border-radius: 10px;
-  padding: 18px;
+  padding: 20px;
   cursor: pointer;
-  transition: all 0.25s ease-in-out;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 #gridTarjetasVisados > div:hover {
@@ -60,78 +57,212 @@ dd { margin: 2px 0 0 0; }
   border-color: #0b3d3a;
 }
 
-/* Estilo específico para la tarjeta recomendada (combina con tu verde corporativo) */
-#gridTarjetasVisados > div[style*="border: 2px solid"] {
-  background: #f0f7f4 !important;
-  border-color: #0b3d3a !important;
-  box-shadow: 0 4px 12px rgba(11, 61, 58, 0.1) !important;
-}
-
 #gridTarjetasVisados h3 {
-  margin: 4px 0 8px 0;
-  font-size: 1.1rem;
+  margin: 6px 0 8px 0;
+  font-size: 1.15rem;
   color: #0b3d3a;
 }
 
 #gridTarjetasVisados p {
   margin: 0;
   font-size: 0.9rem;
-  color: #4a5568;
-  line-height: 1.4;
+  color: #475569;
+  line-height: 1.45;
 }
 
-/* Selector desplegable clásico alineado */
+/* ---------- 2. SELECTOR DESPLEGABLE ---------- */
+.selectores {
+  margin-bottom: 25px;
+}
+
 .selectores select {
   width: 100%;
-  padding: 10px 14px;
+  max-width: 400px;
+  padding: 12px 16px;
   border-radius: 8px;
   border: 1px solid #cbd5e1;
   background-color: #fff;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #1e293b;
-  transition: border-color 0.2s;
 }
 
-.selectores select:focus {
-  outline: none;
-  border-color: #0b3d3a;
-  box-shadow: 0 0 0 3px rgba(11, 61, 58, 0.15);
+/* ---------- 3. DISTRIBUCIÓN DE COLUMNAS (ÍNDICE + FICHA) ---------- */
+.columnas {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 30px;
+  align-items: start;
 }
 
-/* Estilo para la ficha técnica detallada inferior */
+@media (max-width: 768px) {
+  .columnas {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Menú lateral dentro de la ficha */
+.indice {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 20px;
+  position: sticky;
+  top: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.indice p {
+  font-weight: bold;
+  color: #0b3d3a;
+  margin-top: 0;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.indice a {
+  display: block;
+  color: #334155;
+  text-decoration: none;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.indice a:hover {
+  color: #0b3d3a;
+  padding-left: 4px;
+}
+
+/* ---------- 4. DISEÑO DE LA FICHA DETALLADA ---------- */
 .ficha {
   background: #ffffff;
-  border: 1px solid #e1e4e8;
-  border-radius: 10px;
-  padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  margin-top: 1.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.ficha .etiqueta {
+  display: inline-block;
+  background-color: #e3f4e8;
+  color: #0b3d3a;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
 }
 
 .ficha h1 {
-  font-size: 1.75rem;
+  font-size: 1.8rem;
   color: #0b3d3a;
-  margin-bottom: 0.5rem;
+  margin: 0 0 8px 0;
 }
 
 .ficha .ubicacion {
   color: #64748b;
   font-weight: 500;
-  margin-bottom: 1rem;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+/* Cuadro de datos clave (Tasas, plazos, validez) */
+.ficha .datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px 0;
+}
+
+.ficha .dato span {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.ficha .dato b {
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.ficha .aviso-ficha {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 12px 16px;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.9rem;
+  color: #92400e;
+  margin: 20px 0;
+}
+
+.ficha h2 {
+  font-size: 1.25rem;
+  color: #0b3d3a;
+  margin-top: 30px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 6px;
+}
+
+.ficha ol {
+  padding-left: 20px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.ficha li {
+  margin-bottom: 8px;
+}
+
+/* Botón de empezar */
+.ficha .empezar {
+  margin-top: 30px;
+  text-align: right;
 }
 
 .ficha .boton-empezar {
   display: inline-block;
-  background: #0b3d3a;
-  color: #ffffff;
-  padding: 11px 22px;
-  border-radius: 5px;
-  text-decoration: none;
+  background-color: #0b3d3a;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 6px;
   font-weight: bold;
-  transition: background 0.2s;
-  margin-top: 1rem;
+  text-decoration: none;
+  transition: background-color 0.2s;
 }
 
 .ficha .boton-empezar:hover {
-  background: #062624;
+  background-color: #062624;
+}
+
+/* Botones inferiores generales */
+.boton-enlace {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 11px 22px;
+  background-color: #0b3d3a;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.boton-enlace.claro {
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+.boton-enlace:hover {
+  opacity: 0.9;
 }
