@@ -1,6 +1,6 @@
 /* =====================================================
    ESTILOS COMPLETOS - PÁGINA DE RESULTADOS (WORKPATH)
-   ===================================================== */
+   ================================================     */
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -68,16 +68,24 @@ dd { margin: 2px 0 0 0; }
   margin-top: 30px; 
 }
 
+/* Contenedor principal de la página con amplitud óptima */
+.pagina, main {
+  max-width: 1240px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+}
+
 
 /* =====================================================
    1. TARJETAS VISUALES SUPERIORES (SELECCIÓN DE VISADOS)
-   ===================================================== */
+   ================================================     */
 
 #gridTarjetasVisados {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
-  margin: 20px 0 30px 0;
+  margin: 20px 0 25px 0;
 }
 
 #gridTarjetasVisados > div {
@@ -112,7 +120,7 @@ dd { margin: 2px 0 0 0; }
 
 /* =====================================================
    2. SELECTOR DESPLEGABLE
-   ===================================================== */
+   ================================================     */
 
 .selectores {
   margin-bottom: 25px;
@@ -139,12 +147,12 @@ dd { margin: 2px 0 0 0; }
 
 /* =====================================================
    3. DISTRIBUCIÓN DE COLUMNAS (ÍNDICE + FICHA AMPLIADA)
-   ===================================================== */
+   ================================================     */
 
 .columnas {
   display: grid !important;
-  grid-template-columns: 200px 3fr !important; /* Da más espacio a la derecha */
-  gap: 30px !important;
+  grid-template-columns: 180px 1fr !important; /* Menú estrecho y todo lo demás para la ficha */
+  gap: 35px !important;
   align-items: start !important;
   width: 100% !important;
 }
@@ -157,13 +165,13 @@ dd { margin: 2px 0 0 0; }
 
 /* Menú lateral dentro de la ficha */
 .indice {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
-  position: sticky;
-  top: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 18px !important;
+  position: sticky !important;
+  top: 20px !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
 }
 
 .indice p {
@@ -193,14 +201,14 @@ dd { margin: 2px 0 0 0; }
 
 
 /* =====================================================
-   4. TARJETA DETALLADA DE LA FICHA DE VISADO
-   ===================================================== */
+   4. TARJETA DETALLADA DE LA FICHA DE VISADO (ANCHO LIBRE)
+   ================================================     */
 
 .ficha {
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
   border-radius: 16px !important;
-  padding: 35px !important;
+  padding: 40px !important;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
   margin-top: 0 !important;
   width: 100% !important;
