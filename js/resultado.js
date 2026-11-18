@@ -234,25 +234,41 @@ document.addEventListener("DOMContentLoaded", async function () {
   agregarFila("Áreas de interés", unir("area", datosRespuesta.area));
   agregarFila("Comentarios", datosRespuesta.comentarios);
  
-  // 4. Casos especiales y renderizado de visados
+// 4. Casos especiales y renderizado de visados
   var esUE = PAISES_UE.indexOf(clavePais) !== -1;
  
+  var seccionVias = document.getElementById("vias");
+  var avisoUE = document.getElementById("avisoUE");
+
   if (datosRespuesta.ue === "si" && esUE) {
-    var aviso = document.getElementById("avisoUE");
-    aviso.hidden = false;
-    aviso.innerHTML = "<h2>No necesitas visado para " + (pais ? pais.nombre : clavePais) + "</h2>" +
-      "<p>Con pasaporte o DNI de un país de la UE puedes vivir y trabajar en otro país de la UE sin visado de trabajo. " +
-      "Lo que sí suele hacer falta es registrarte como residente al llegar.</p>";
-    document.getElementById("vias").hidden = true;
+    if (avisoUE) {
+      avisoUE.hidden = false;
+      avisoUE.innerHTML = "<h2>No necesitas visado para " + (pais ? pais.nombre : clavePais) + "</h2>" +
+        "<p>Con pasaporte o DNI de un país de la UE puedes vivir y trabajar en otro país de la UE sin visado de trabajo. " +
+        "Lo que sí suele hacer falta es registrarte como residente al llegar.</p>";
+    }
+    if (seccionVias) seccionVias.hidden = true;
  
-  } else if (!pais) {
-    mostrarMensaje("Todavía no tenemos información sobre ese destino. Consulta la embajada o el consulado del país al que quieres ir.");
+  } else if (!pais || !pais.visados) {
+    mostrarMensaje("Todavía no tenemos información sobre ese destino (" + clavePais + "). Consulta la embajada o el consulado.");
  
   } else {
+    // Asegurarnos de que la sección de vías esté completamente visible
+    if (seccionVias) seccionVias.hidden = false;
+    var mensajeError = document.getElementById("mensaje");
+    if (mensajeError) mensajeError.hidden = true;
+
     document.getElementById("tituloVias").textContent = "Vías posibles en " + pais.nombre;
+    
+    // Generar la lista ordenada y rellenar las opciones
     lista = ordenarVisados(pais.visados, datosRespuesta.estudios);
     rellenarDesplegable(datosRespuesta.estudios);
     mostrarFicha();
-    selVisado.addEventListener("change", mostrarFicha);
+    
+    // Escuchar cambios en el desplegable para actualizar la ficha al instante
+    if (selVisado) {
+      selVisado.addEventListener("change", mostrarFicha);
+    }
   }
+});
 });
