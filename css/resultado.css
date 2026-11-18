@@ -1,5 +1,7 @@
+/* =====================================================
+   Estilos de la página de resultado (Unificados y mejorados)
+   ===================================================== */
 
-/* Estilos propios de la página de resultado */
 dl { margin: 0; }
 dt { font-weight: bold; margin-top: 10px; color: #0b3d3a; }
 dd { margin: 2px 0 0 0; }
@@ -11,14 +13,125 @@ dd { margin: 2px 0 0 0; }
  
 .un-selector { grid-template-columns: 1fr; }
  
-.sello { display: inline-block; background-color: #fdeccf; color: #a35a00;
-  font-size: 12px; font-weight: bold; padding: 3px 10px; border-radius: 12px; margin-left: 6px; }
+.sello { 
+  display: inline-block; background-color: #fdeccf; color: #a35a00;
+  font-size: 12px; font-weight: bold; padding: 3px 10px; border-radius: 12px; margin-left: 6px; 
+}
  
 .boton-enlace {
   display: inline-block; margin-top: 15px; padding: 11px 22px;
   background-color: #0b3d3a; color: white; font-weight: bold;
   border-radius: 5px; text-decoration: none;
+  transition: background-color 0.2s;
 }
+
+.boton-enlace:hover {
+  background-color: #062624;
+}
+
 .error { background-color: #fdecea; border: 1px solid #e5a29b; border-radius: 8px; padding: 12px 16px; }
 #vias { margin-top: 25px; }
- 
+
+
+/* =====================================================
+   Tarjetas visuales de selección de visados (NUEVO)
+   ================================================     */
+
+#gridTarjetasVisados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 1.5rem 0 2rem 0;
+}
+
+#gridTarjetasVisados > div {
+  background: #ffffff;
+  border: 1px solid #d8dee4;
+  border-radius: 10px;
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+#gridTarjetasVisados > div:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(11, 61, 58, 0.12);
+  border-color: #0b3d3a;
+}
+
+/* Estilo específico para la tarjeta recomendada (combina con tu verde corporativo) */
+#gridTarjetasVisados > div[style*="border: 2px solid"] {
+  background: #f0f7f4 !important;
+  border-color: #0b3d3a !important;
+  box-shadow: 0 4px 12px rgba(11, 61, 58, 0.1) !important;
+}
+
+#gridTarjetasVisados h3 {
+  margin: 4px 0 8px 0;
+  font-size: 1.1rem;
+  color: #0b3d3a;
+}
+
+#gridTarjetasVisados p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4a5568;
+  line-height: 1.4;
+}
+
+/* Selector desplegable clásico alineado */
+.selectores select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background-color: #fff;
+  font-size: 0.95rem;
+  color: #1e293b;
+  transition: border-color 0.2s;
+}
+
+.selectores select:focus {
+  outline: none;
+  border-color: #0b3d3a;
+  box-shadow: 0 0 0 3px rgba(11, 61, 58, 0.15);
+}
+
+/* Estilo para la ficha técnica detallada inferior */
+.ficha {
+  background: #ffffff;
+  border: 1px solid #e1e4e8;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  margin-top: 1.5rem;
+}
+
+.ficha h1 {
+  font-size: 1.75rem;
+  color: #0b3d3a;
+  margin-bottom: 0.5rem;
+}
+
+.ficha .ubicacion {
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.ficha .boton-empezar {
+  display: inline-block;
+  background: #0b3d3a;
+  color: #ffffff;
+  padding: 11px 22px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.2s;
+  margin-top: 1rem;
+}
+
+.ficha .boton-empezar:hover {
+  background: #062624;
+}
