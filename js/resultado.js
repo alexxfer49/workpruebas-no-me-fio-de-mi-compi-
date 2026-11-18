@@ -1,5 +1,5 @@
 // =====================================================
-// resultado.js (Mejorado visualmente con tarjetas de selección)
+// resultado.js (Completo y funcional con tarjetas visuales)
 // =====================================================
  
 var TEXTOS = {
@@ -76,12 +76,11 @@ function ordenarVisados(todos, estudios) {
   return copia;
 }
 
-// ---------- NUEVO: TARJETAS VISUALES PARA ESCOGER A SIMPLE VISTA ----------
-function dibujarTarjetasVisuales(estudios, selVisado, mostrarFichaFunc, fichaEl) {
+// ---------- CREAR LAS TARJETAS VISUALES ARRIBA ----------
+function dibujarTarjetasVisuales(estudios, selVisado, mostrarFichaFunc, fichaEl, listaVisados, paisObj, clavePaisStr) {
   var seccionVias = document.getElementById("vias");
   if (!seccionVias) return;
 
-  // Evitar duplicados si se recarga
   var anterior = document.getElementById("gridTarjetasVisados");
   if (anterior) anterior.remove();
 
@@ -89,30 +88,29 @@ function dibujarTarjetasVisuales(estudios, selVisado, mostrarFichaFunc, fichaEl)
   
   var contenedorGrid = document.createElement("div");
   contenedorGrid.id = "gridTarjetasVisados";
-  contenedorGrid.style.cssText = "display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0;";
 
-  lista.forEach(function (v, i) {
+  listaVisados.forEach(function (v, i) {
     var cumple = nivelMinimoDe(v) <= nivel;
     var esRecomendado = (i === 0 && cumple);
 
     var card = document.createElement("div");
-    // Estilo moderno y limpio para las tarjetas
-    card.style.cssText = esRecomendado
-      ? "background: #f0f7ff; border: 2px solid #0070f3; border-radius: 10px; padding: 18px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,112,243,0.15); transition: transform 0.2s;"
-      : "background: #ffffff; border: 1px solid #d8dee4; border-radius: 10px; padding: 18px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04);";
+    if (esRecomendado) {
+      card.style.cssText = "background: #f0f7f4; border: 2px solid #0b3d3a; border-radius: 10px; padding: 18px; cursor: pointer; box-shadow: 0 4px 12px rgba(11,61,58,0.15);";
+    } else {
+      card.style.cssText = "background: #ffffff; border: 1px solid #d8dee4; border-radius: 10px; padding: 18px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.03);";
+    }
 
     var badge = esRecomendado
-      ? "<span style='display:inline-block; background:#0070f3; color:#fff; font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:4px; margin-bottom:10px; letter-spacing:0.5px;'>★ MÁS RECOMENDADO PARA TI</span>"
+      ? "<span style='display:inline-block; background:#0b3d3a; color:#fff; font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:4px; margin-bottom:10px;'>★ MÁS RECOMENDADO PARA TI</span>"
       : (!cumple
         ? "<span style='display:inline-block; background:#fff3cd; color:#856404; font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:4px; margin-bottom:10px;'>Pide estudios: " + v.minimo + "</span>"
         : "<span style='display:inline-block; background:#e9ecef; color:#495057; font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:4px; margin-bottom:10px;'>Opción disponible</span>");
 
     card.innerHTML = badge +
-      "<h3 style='margin: 0 0 8px 0; font-size: 1.1rem; color: #111;'>" + v.nombre + "</h3>" +
+      "<h3 style='margin: 0 0 8px 0; font-size: 1.1rem; color: #0b3d3a;'>" + v.nombre + "</h3>" +
       "<p style='margin: 0 0 10px 0; font-size: 0.85rem; color: #555; font-weight: 500;'>" + v.tipo + "</p>" +
       "<p style='margin: 0; font-size: 0.9rem; color: #444; line-height: 1.4;'>" + v.descripcion + "</p>";
 
-    // Al hacer clic en la tarjeta, selecciona el visado en el desplegable y muestra su ficha abajo
     card.addEventListener("click", function () {
       selVisado.value = v.id;
       mostrarFichaFunc();
@@ -122,7 +120,6 @@ function dibujarTarjetasVisuales(estudios, selVisado, mostrarFichaFunc, fichaEl)
     contenedorGrid.appendChild(card);
   });
 
-  // Insertar las tarjetas justo antes del selector desplegable
   var selectoresDiv = seccionVias.querySelector(".selectores");
   if (selectoresDiv) {
     seccionVias.insertBefore(contenedorGrid, selectoresDiv);
@@ -137,6 +134,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   var ficha = document.getElementById("ficha");
   var pais = null;
   var clavePais = "";
+  var lista = [];
   var perfilUsuario = {};
 
   var params = new URLSearchParams(window.location.search);
@@ -166,3 +164,159 @@ document.addEventListener("DOMContentLoaded", async function () {
   } else if (typeof clienteSupabase !== "undefined") {
     try {
       var { data: { user } } = await clienteSupabase.auth.getUser();
+      if (user) {
+        var { data: perfil } = await clienteSupabase
+          .from("usuaris")
+          .select("id")
+          .eq("auth_id", user.id)
+          .single();
+
+        if (perfil) {
+          var { data: ultimo } = await clienteSupabase
+            .from("cuestionarios")
+            .select("*")
+            .eq("usuario_id", perfil.id)
+            .order("fecha_creacion", { ascending: false })
+            .limit(1)
+            .single();
+
+          if (ultimo) {
+            perfilUsuario = ultimo;
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Error al recuperar el cuestionario de Supabase:", e);
+    }
+  }
+
+  if (!perfilUsuario.pais) {
+    window.location.replace("cuestionario.html");
+    return;
+  }
+ 
+  clavePais = normalizar(perfilUsuario.pais);
+  pais = (typeof PAISES !== "undefined") ? PAISES[clavePais] : null;
+ 
+  // 2. Pintar el resumen de respuestas
+  agregarFila("Estudios", traducir("estudios", perfilUsuario.estudios));
+  agregarFila("Título", perfilUsuario.titulo);
+  agregarFila("Formación extra", unir("formacion", perfilUsuario.formacion));
+  agregarFila("Inglés", traducir("ingles", perfilUsuario.ingles));
+  agregarFila("País de destino", pais ? pais.nombre : perfilUsuario.pais);
+  agregarFila("Pasaporte de la UE", perfilUsuario.ue === "si" ? "Sí" : (perfilUsuario.ue === "no" ? "No" : ""));
+  agregarFila("Duración", traducir("tiempo", perfilUsuario.tiempo));
+  agregarFila("Modalidad", traducir("modalidad", perfilUsuario.modalidad));
+  agregarFila("Jornada", traducir("jornada", perfilUsuario.jornada));
+  agregarFila("Áreas de interés", unir("area", perfilUsuario.area));
+  agregarFila("Comentarios", perfilUsuario.comentarios);
+ 
+  // 3. Renderizado de visados
+  var esUE = PAISES_UE.indexOf(clavePais) !== -1;
+  var seccionVias = document.getElementById("vias");
+  var avisoUE = document.getElementById("avisoUE");
+
+  if (perfilUsuario.ue === "si" && esUE) {
+    if (avisoUE) {
+      avisoUE.hidden = false;
+      avisoUE.innerHTML = "<h2>No necesitas visado para " + (pais ? pais.nombre : perfilUsuario.pais) + "</h2>" +
+        "<p>Con pasaporte o DNI de un país de la UE puedes vivir y trabajar en otro país de la UE sin visado de trabajo.</p>";
+    }
+    if (seccionVias) seccionVias.hidden = true;
+ 
+  } else if (!pais || !pais.visados) {
+    mostrarMensaje("Todavía no tenemos fichas de visados cargadas para el destino: <b>" + perfilUsuario.pais + "</b>.<br>Añádelo en tu archivo <b>visados-datos.js</b> (por ejemplo: Canadá o Alemania).");
+ 
+  } else {
+    if (seccionVias) seccionVias.hidden = false;
+    var mensajeError = document.getElementById("mensaje");
+    if (mensajeError) mensajeError.hidden = true;
+
+    var tituloVias = document.getElementById("tituloVias");
+    if (tituloVias) tituloVias.textContent = "Vías posibles en " + pais.nombre;
+    
+    // Ordenar los visados recomendados según estudios
+    lista = ordenarVisados(pais.visados, perfilUsuario.estudios);
+
+    // Rellenar desplegable clásico
+    function rellenarDesplegable() {
+      var nivel = NIVEL_USUARIO[perfilUsuario.estudios];
+      if (nivel === undefined) { nivel = 0; }
+      var html = "";
+ 
+      for (var i = 0; i < lista.length; i++) {
+        var texto = lista[i].nombre;
+        if (i === 0 && nivelMinimoDe(lista[i]) <= nivel) {
+          texto = "★ " + texto + " (recomendado)";
+        } else if (nivelMinimoDe(lista[i]) > nivel) {
+          texto = texto + " (pide más estudios)";
+        }
+        html += "<option value='" + lista[i].id + "'>" + texto + "</option>";
+      }
+      if (selVisado) selVisado.innerHTML = html;
+ 
+      var id = window.location.hash.replace("#", "");
+      for (var j = 0; j < lista.length; j++) {
+        if (lista[j].id === id && selVisado) { selVisado.value = id; }
+      }
+    }
+
+    // Dibujar la ficha seleccionada
+    function mostrarFicha() {
+      if (!selVisado || !ficha) return;
+      var visado = null;
+      for (var i = 0; i < lista.length; i++) {
+        if (lista[i].id === selVisado.value) { visado = lista[i]; }
+      }
+      if (!visado) return;
+ 
+      var html = "";
+      html += "<span class='etiqueta'>" + visado.tipo + "</span>";
+      html += "<h1>" + pais.bandera + " " + visado.nombre + "</h1>";
+      html += "<p class='ubicacion'>📍 Destino: " + pais.nombre + "</p>";
+      html += "<p>" + visado.descripcion + "</p>";
+ 
+      html += "<div class='datos' id='validez'>";
+      for (var clave in visado.datos) {
+        html += "<div class='dato'><span>" + clave + "</span><b>" + visado.datos[clave] + "</b></div>";
+      }
+      html += "</div>";
+ 
+      if (visado.aviso) {
+        html += "<p class='aviso-ficha'>" + visado.aviso + "</p>";
+      }
+ 
+      html += "<h2 id='documentos'>Documentos necesarios</h2><ol>";
+      for (var d = 0; d < visado.documentos.length; d++) {
+        html += "<li>" + visado.documentos[d] + "</li>";
+      }
+      html += "</ol>";
+ 
+      html += "<h2 id='procedimiento'>Procedimiento</h2><ol>";
+      for (var p = 0; p < visado.pasos.length; p++) {
+        html += "<li>" + visado.pasos[p] + "</li>";
+      }
+      html += "</ol>";
+ 
+      html += "<h2 id='masinfo'>Más información</h2>";
+      html += "<p>Suele pedir como mínimo: <b>" + visado.minimo + "</b>.</p>";
+      html += "<p>Comprueba siempre las condiciones actuales en <a href='" + pais.web + "' target='_blank' rel='noopener'>" + pais.web + "</a></p>";
+ 
+      html += "<div class='empezar'>";
+      html += "<a class='boton-empezar' href='proceso.html?pais=" + clavePais + "&visado=" + visado.id + "'>Empezar con este visado →</a>";
+      html += "</div>";
+ 
+      ficha.innerHTML = html;
+    }
+
+    rellenarDesplegable();
+    mostrarFicha();
+
+    // Volver a activar las tarjetas visuales arriba
+    dibujarTarjetasVisuales(perfilUsuario.estudios, selVisado, mostrarFicha, ficha, lista, pais, clavePais);
+    
+    if (selVisado) {
+      selVisado.addEventListener("change", mostrarFicha);
+    }
+  }
+});
