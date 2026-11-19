@@ -160,3 +160,12 @@
     color: var(--navy);
 }
 .notas-lista li { margin: .4rem 0; }
+
+/* Aviso de qué cuestionario se usa para recomendar (visados.html) */
+.nota.ok {
+    background: #E3F3EA;
+    border-left-color: var(--green);
+    color: var(--navy);
+}
+.nota[hidden] { display: none; }
+.nota a { color: #0a6f96; font-weight: 700; }
