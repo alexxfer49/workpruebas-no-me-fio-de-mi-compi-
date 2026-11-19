@@ -1,16 +1,63 @@
 // =====================================================
 // visados.js
-// Página con TODOS los visados de trabajo del país elegido, con su
-// información completa. Si vienen las respuestas del cuestionario en la
-// dirección, ordena los visados y marca el más recomendado.
+// Página con TODAS las vías para trabajar en España, con su información
+// completa. Marca la más recomendada según el perfil:
+//  1) si vienen las respuestas del cuestionario en la dirección, usa esas;
+//  2) si no, usa el último cuestionario guardado de la persona en Supabase.
 // Necesita visados-datos.js cargado antes.
 // =====================================================
-document.addEventListener("DOMContentLoaded", function () {
+
+// Busca el último cuestionario guardado de quien tiene la sesión iniciada
+async function cargarUltimoCuestionario() {
+    try {
+        if (typeof clienteSupabase === "undefined") return null;
+
+        var sesion = await clienteSupabase.auth.getSession();
+        var usuario = sesion.data.session && sesion.data.session.user;
+        if (!usuario) return null;
+
+        var fila = await clienteSupabase
+            .from("usuaris").select("id").eq("auth_id", usuario.id).maybeSingle();
+        if (fila.error || !fila.data) return null;
+
+        var consulta = await clienteSupabase
+            .from("cuestionarios").select("*")
+            .eq("usuario_id", fila.data.id)
+            .not("ubicacion", "is", null)
+            .order("fecha_creacion", { ascending: false })
+            .limit(1).maybeSingle();
+        if (consulta.error || !consulta.data) return null;
+
+        // Lo convertimos a los mismos parámetros que usa el cuestionario
+        var c = consulta.data;
+        var p = new URLSearchParams();
+        p.set("estudios", c.estudios || "");
+        if (c.titulo) p.set("titulo", c.titulo);
+        (c.formacion || []).forEach(function (v) { p.append("formacion", v); });
+        p.set("ubicacion", c.ubicacion || "");
+        p.set("oferta", c.oferta || "");
+        p.set("tiempo", c.tiempo || "");
+        p.set("modalidad", c.modalidad || "");
+        p.set("jornada", c.jornada || "");
+        (c.area || []).forEach(function (v) { p.append("area", v); });
+        if (c.comentarios) p.set("comentarios", c.comentarios);
+
+        return { params: p, fecha: c.fecha_creacion };
+    } catch (error) {
+        console.error("No se pudo leer el último cuestionario:", error);
+        return null;
+    }
+}
+
+function perfilCompleto(r) {
+    return !!(r.estudios && r.tiempo && r.ubicacion && r.oferta);
+}
+
+document.addEventListener("DOMContentLoaded", async function () {
     var params = new URLSearchParams(window.location.search);
     var r = leerRespuestas(params);
     var info = INFO_PAISES[r.pais];
 
-    // Sin país válido, volvemos al cuestionario
     if (!info) {
         window.location.replace("cuestionario.html");
         return;
@@ -19,16 +66,40 @@ document.addEventListener("DOMContentLoaded", function () {
     document.title = "Visados en " + info.nombre + " · WorkPath";
     document.getElementById("tituloPais").textContent = "Visados de trabajo en " + info.nombre;
 
-    // El perfil está completo si tenemos las respuestas que usa la recomendación
-    var hayPerfil = !!(r.estudios && r.tiempo && r.ubicacion && r.oferta);
+    var aviso = document.getElementById("avisoPerfil");
+    var consultaResultado = window.location.search;
+    var hayPerfil = perfilCompleto(r);
+
+    // Sin respuestas en la dirección: probamos con el último cuestionario guardado
+    if (!hayPerfil) {
+        var guardado = await cargarUltimoCuestionario();
+
+        if (guardado) {
+            r = leerRespuestas(guardado.params);
+            hayPerfil = perfilCompleto(r);
+            consultaResultado = "?" + guardado.params.toString();
+
+            var fecha = new Date(guardado.fecha).toLocaleDateString("es-ES", {
+                day: "numeric", month: "long", year: "numeric"
+            });
+            aviso.textContent = "La recomendación se basa en tu último cuestionario, del " + fecha + ". ";
+        } else {
+            aviso.textContent = "Todavía no has hecho el cuestionario, así que no podemos decirte cuál te conviene más. ";
+            var enlaceCuestionario = crear("a", "Hazlo aquí");
+            enlaceCuestionario.href = "cuestionario.html";
+            aviso.appendChild(enlaceCuestionario);
+        }
+        aviso.hidden = false;
+    }
+
     var lista = hayPerfil
         ? ordenarVisados(r)
         : info.visados.map(function (v) { return { visado: v, puntos: 0, motivos: [], avisos: [] }; });
 
-    // Enlace para volver al resultado (solo si hay respuestas)
+    // Enlace para volver al resultado (solo si hay perfil)
     var volver = document.getElementById("volverResultado");
     if (hayPerfil) {
-        volver.href = "resultado.html" + window.location.search;
+        volver.href = "resultado.html" + consultaResultado;
     } else {
         volver.hidden = true;
     }
@@ -74,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
             encaje.appendChild(crear("h3", "Cómo encaja contigo"));
             var ul = crear("ul", null, "motivos");
             x.motivos.forEach(function (m) { ul.appendChild(crear("li", m)); });
-            x.avisos.forEach(function (m) { ul.appendChild(crear("li", m, "pega")); });
+            x.avisos.forEach(function (m) { if (m) ul.appendChild(crear("li", m, "pega")); });
             encaje.appendChild(ul);
             tarjeta.appendChild(encaje);
         }
@@ -91,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
     enlace.rel = "noopener noreferrer";
     fuente.appendChild(enlace);
 
-    // Ir al visado que se pidió en la dirección (#id), ya que las tarjetas se crean con JavaScript
+    // Ir al visado que se pidió en la dirección (#id): las tarjetas se crean con JavaScript
     var id = window.location.hash.slice(1);
     var objetivo = id && document.getElementById(id);
     if (objetivo) {
