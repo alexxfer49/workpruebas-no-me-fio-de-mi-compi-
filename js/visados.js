@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("tituloPais").textContent = "Visados de trabajo en " + info.nombre;
 
     // El perfil está completo si tenemos las respuestas que usa la recomendación
-    var hayPerfil = !!(r.estudios && r.tiempo && r.modalidad && r.ingles);
+    var hayPerfil = !!(r.estudios && r.tiempo && r.ubicacion && r.oferta);
     var lista = hayPerfil
         ? ordenarVisados(r)
         : info.visados.map(function (v) { return { visado: v, puntos: 0, motivos: [], avisos: [] }; });
@@ -32,6 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         volver.hidden = true;
     }
+
+    // Notas generales para personas de Honduras
+    var notas = document.getElementById("notasPais");
+    (info.notas || []).forEach(function (t) { notas.appendChild(crear("li", t)); });
 
     var contenedor = document.getElementById("listaVisados");
 
