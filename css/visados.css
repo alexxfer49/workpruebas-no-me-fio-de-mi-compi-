@@ -129,3 +129,34 @@
     .fila-visado { flex-direction: column; align-items: flex-start; }
     .fila-visado:hover { transform: none; }
 }
+
+/* ---------- Lista de vías posibles (resultado.html) ---------- */
+.fila-visado .ir {
+    flex: none;
+    font-weight: 700;
+    color: #0a6f96;
+    transition: transform .2s;
+}
+
+.fila-visado:hover .ir { transform: translateX(4px); }
+
+/* La fila del visado más recomendado destaca */
+.fila-visado.mejor {
+    background: linear-gradient(135deg, #F1FAF5, #fff 60%);
+    border: 2px solid var(--green);
+    border-left: 8px solid var(--lime);
+    box-shadow: 0 8px 24px rgba(13, 138, 95, .15);
+}
+
+.fila-visado .sello { margin-bottom: .4rem; }
+
+/* Notas generales para personas de Honduras (visados.html) */
+.notas-lista {
+    margin: 0 0 1.75rem;
+    padding: 1rem 1.25rem 1rem 2.4rem;
+    background: #E3F3EA;
+    border-left: 5px solid var(--green);
+    border-radius: 10px;
+    color: var(--navy);
+}
+.notas-lista li { margin: .4rem 0; }
