@@ -33,12 +33,12 @@
     <!-- BANDA DE TÍTULO -->
     <section class="banda">
         <h1>🧭 Cuestionario de Orientación</h1>
-        <p>Cuéntanos qué has estudiado, a dónde quieres ir y cómo quieres trabajar.</p>
+        <p>Cuéntanos qué has estudiado, cuál es tu situación y cómo quieres trabajar en España.</p>
     </section>
 
     <!-- CONTENIDO DEL CUESTIONARIO -->
     <main class="pagina">
-        <form id="formularioCuestionario">
+        <form id="formularioCuestionario" action="resultado.html" method="get">
 
             <!-- BLOQUE 1: ESTUDIOS -->
             <fieldset>
@@ -65,37 +65,20 @@
                 <label class="opcion"><input type="checkbox" name="formacion" value="certificados"> Certificados oficiales</label>
                 <label class="opcion"><input type="checkbox" name="formacion" value="practicas"> Prácticas en empresa</label>
                 <label class="opcion"><input type="checkbox" name="formacion" value="ninguna"> Ninguna</label>
-
-                <label for="ingles">Nivel de inglés *</label>
-                <select id="ingles" name="ingles" required>
-                    <option value="">-- Elige una opción --</option>
-                    <option value="a1">A1 · Principiante</option>
-                    <option value="a2">A2 · Básico</option>
-                    <option value="b1">B1 · Intermedio</option>
-                    <option value="b2">B2 · Intermedio alto</option>
-                    <option value="c1">C1 · Avanzado</option>
-                    <option value="c2">C2 · Bilingüe / Nativo</option>
-                </select>
             </fieldset>
 
-            <!-- BLOQUE 3: PAÍS DE DESTINO -->
+            <!-- BLOQUE 3: TU SITUACIÓN -->
             <fieldset>
-                <legend>3 · País de destino</legend>
+                <legend>3 · Tu situación</legend>
 
-                <label for="pais">¿A qué país quieres ir? *</label>
-                <select id="pais" name="pais" required>
-                    <option value="">-- Elige un país --</option>
-                    <option value="alemania">Alemania</option>
-                    <option value="francia">Francia</option>
-                    <option value="italia">Italia</option>
-                    <option value="irlanda">Irlanda</option>
-                    <option value="reino-unido">Reino Unido</option>
-                    <option value="paises-bajos">Paises Bajos</option>
-                    <option value="portugal">Portugal</option>
-                    <option value="eeuu">Estados Unidos</option>
-                    <option value="canada">Canada</option>
-                    <option value="otro">Otro</option>
-                </select>
+                <p class="pregunta">Tu destino es España. ¿Dónde estás ahora? *</p>
+                <label class="opcion"><input type="radio" name="ubicacion" value="honduras" required> Estoy en Honduras</label>
+                <label class="opcion"><input type="radio" name="ubicacion" value="espana-menos"> Ya estoy en España (menos de 2 años)</label>
+                <label class="opcion"><input type="radio" name="ubicacion" value="espana-mas"> Ya estoy en España (2 años o más)</label>
+
+                <p class="pregunta">¿Tienes una oferta o contrato de trabajo en España? *</p>
+                <label class="opcion"><input type="radio" name="oferta" value="si" required> Sí</label>
+                <label class="opcion"><input type="radio" name="oferta" value="no"> No, todavía no</label>
 
                 <p class="pregunta">¿Por cuánto tiempo? *</p>
                 <label class="opcion"><input type="radio" name="tiempo" value="meses" required> Unos meses</label>
