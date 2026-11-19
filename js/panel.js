@@ -6,6 +6,7 @@
 // =====================================================
 
 var PAISES = {
+    espana: "España",
     alemania: "Alemania", francia: "Francia", italia: "Italia", irlanda: "Irlanda",
     "reino-unido": "Reino Unido", "paises-bajos": "Países Bajos", portugal: "Portugal",
     eeuu: "Estados Unidos", canada: "Canadá", otro: "Otro país"
@@ -39,14 +40,14 @@ function enlaceResultado(c) {
     p.set("estudios", c.estudios || "");
     if (c.titulo) p.set("titulo", c.titulo);
     (c.formacion || []).forEach(function (v) { p.append("formacion", v); });
-    p.set("ingles", c.ingles || "");
+    p.set("ubicacion", c.ubicacion || "");
     p.set("pais", c.pais || "");
     p.set("tiempo", c.tiempo || "");
     p.set("modalidad", c.modalidad || "");
     p.set("jornada", c.jornada || "");
     (c.area || []).forEach(function (v) { p.append("area", v); });
     if (c.comentarios) p.set("comentarios", c.comentarios);
-    if (c.ue) p.set("ue", c.ue);
+    if (c.oferta) p.set("oferta", c.oferta);
     return "resultado.html?" + p.toString();
 }
 
