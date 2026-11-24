@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="img/logo-icon.png">
-    <title>Resultado · WorkPath</title>
+    <title>Resultado · España · WorkPath</title>
 
     <!-- Oculta la página hasta comprobar que hay sesión (ver js/proteger.js) -->
     <style>html { visibility: hidden; }</style>
@@ -37,8 +37,8 @@
     </header>
 
     <section class="banda">
-        <h1 id="tituloPais">Visados de trabajo</h1>
-        <p id="subtituloPais">Todos los tipos de visado de trabajo del país que has elegido según tus respuestas.</p>
+        <h1 id="tituloPais">Visados y vías para España</h1>
+        <p id="subtituloPais">Opciones orientativas de residencia y trabajo desde Honduras hacia España según tus respuestas.</p>
     </section>
 
     <main class="pagina">
@@ -48,18 +48,18 @@
             <dl id="resumen" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 0;"></dl>
         </fieldset>
 
-        <!-- AVISO PARA CIUDADANOS DE LA UE -->
+        <!-- AVISO PARA QUIEN TENGA PASAPORTE / NACIONALIDAD DE LA UE -->
         <div id="avisoUE" class="aviso" hidden></div>
 
-        <!-- VÍAS POSIBLES -->
+        <!-- VÍAS POSIBLES EN ESPAÑA -->
         <section id="vias">
-            <h2 id="tituloVias" style="color: #0b3d3a; margin-bottom: 1rem;">Vías posibles</h2>
+            <h2 id="tituloVias" style="color: #0b3d3a; margin-bottom: 1rem;">Vías posibles en España</h2>
 
             <!-- Aquí se inyectan dinámicamente las tarjetas superiores desde JavaScript -->
 
             <div class="selectores un-selector">
                 <div>
-                    <label for="selVisado" style="font-weight: bold; display: block; margin-bottom: 0.5rem; color: #334155;">O filtrar por tipo de visado:</label>
+                    <label for="selVisado" style="font-weight: bold; display: block; margin-bottom: 0.5rem; color: #334155;">O filtrar por tipo de vía / visado en España:</label>
                     <select id="selVisado"></select>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                     <p>En esta ficha</p>
                     <a href="#documentos">Documentos necesarios</a>
                     <a href="#procedimiento">Procedimiento</a>
-                    <a href="#validez">Validez del visado</a>
+                    <a href="#validez">Validez y condiciones</a>
                     <a href="#masinfo">Más información</a>
                 </nav>
 
