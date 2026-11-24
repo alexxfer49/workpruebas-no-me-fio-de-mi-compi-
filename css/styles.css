@@ -48,7 +48,86 @@ header.top {
 .brand span {
   color: var(--green);
 }
+/* =====================================================
+   Sección Quiénes somos / A qué nos dedicamos / Qué hacemos
+   ===================================================== */
 
+.wp-sobre {
+    max-width: 1200px;
+    margin: 2.5rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(11, 61, 58, 0.05);
+    box-sizing: border-box;
+}
+
+.wp-sobre-cabecera {
+    margin-bottom: 1.75rem;
+}
+
+.wp-badge {
+    display: inline-block;
+    background-color: #e3f4e8;
+    color: #0b3d3a;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 0.6rem;
+}
+
+.wp-sobre-cabecera h2 {
+    margin: 0 0 0.5rem 0;
+    color: #0b3d3a;
+    font-size: 1.65rem;
+}
+
+.wp-sobre-intro {
+    margin: 0;
+    color: #334155;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.wp-sobre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+}
+
+.wp-sobre-card {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 1.25rem;
+    box-sizing: border-box;
+}
+
+.wp-sobre-card h3 {
+    margin: 0 0 0.6rem 0;
+    color: #0b3d3a;
+    font-size: 1.15rem;
+}
+
+.wp-sobre-card p {
+    margin: 0;
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.55;
+}
+
+.wp-sobre-aviso {
+    margin: 1.5rem 0 0 0;
+    padding: 0.9rem 1.1rem;
+    background: #f0f7f4;
+    border-left: 4px solid #0b3d3a;
+    border-radius: 0 8px 8px 0;
+    color: #1e293b;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
 .menu {
   display: flex;
   flex-wrap: wrap;
