@@ -1,7 +1,7 @@
 // =====================================================
 // resultado.js (Exclusivo para destino: España desde Honduras)
 // =====================================================
-
+ 
 var TEXTOS = {
   estudios: { eso: "ESO", bachillerato: "Bachillerato", gm: "Grado Medio (FP)", gs: "Grado Superior (FP)", universidad: "Universidad" },
   ingles: { a1: "A1", a2: "A2", b1: "B1", b2: "B2", c1: "C1", c2: "C2" },
@@ -11,10 +11,10 @@ var TEXTOS = {
   formacion: { idiomas: "Idiomas", informatica: "Informática", certificados: "Certificados oficiales", practicas: "Prácticas en empresa", ninguna: "Ninguna" },
   area: { soporte: "Soporte técnico", redes: "Redes y sistemas", seguridad: "Ciberseguridad", web: "Desarrollo web", autonomo: "Autónomo" }
 };
-
+ 
 var NIVEL_USUARIO = { eso: 0, bachillerato: 1, gm: 2, gs: 3, universidad: 4 };
 var NIVEL_MINIMO = { "Grado Medio (FP)": 2, "Grado Superior (FP)": 3, "Universidad": 4 };
-
+ 
 // Datos base de respaldo para España si aún no los has cargado en visados-datos.js
 var ESPANA_RESPALDO = {
   nombre: "España",
@@ -103,14 +103,14 @@ var ESPANA_RESPALDO = {
     }
   ]
 };
-
+ 
 function traducir(grupo, valor) {
   if (TEXTOS[grupo] && TEXTOS[grupo][valor]) {
     return TEXTOS[grupo][valor];
   }
   return valor;
 }
-
+ 
 function unir(grupo, valores) {
   if (!valores) return "";
   var arr = Array.isArray(valores) ? valores : [valores];
@@ -120,19 +120,27 @@ function unir(grupo, valores) {
   }
   return textos.join(", ");
 }
-
+ 
+// ---------- 2. RESUMEN EN MINI-CAJITAS ----------
+var ICONOS = { "Trayecto": "🛂", "Estudios": "🎓", "Título": "📜", "Formación extra": "📚", "Inglés": "🗣️",
+  "Pasaporte de la UE": "🇪🇺", "Duración": "⏳", "Modalidad": "💼", "Jornada": "🕒", "Áreas de interés": "🧩", "Comentarios": "💬" };
+ 
 function agregarFila(titulo, valor) {
   if (!valor) { return; }
   var resumen = document.getElementById("resumen");
   if (!resumen) return;
+  var caja = document.createElement("div");
+  caja.className = "mini" + (titulo === "Comentarios" ? " ancho" : "");
+  caja.setAttribute("data-icon", ICONOS[titulo] || "•");
   var dt = document.createElement("dt");
   dt.textContent = titulo;
   var dd = document.createElement("dd");
   dd.textContent = valor;
-  resumen.appendChild(dt);
-  resumen.appendChild(dd);
+  caja.appendChild(dt);
+  caja.appendChild(dd);
+  resumen.appendChild(caja);
 }
-
+ 
 function mostrarMensaje(texto) {
   var m = document.getElementById("mensaje");
   if (m) {
@@ -142,19 +150,19 @@ function mostrarMensaje(texto) {
   var vias = document.getElementById("vias");
   if (vias) vias.hidden = true;
 }
-
+ 
 function nivelMinimoDe(visado) {
   if (NIVEL_MINIMO[visado.minimo] !== undefined) {
     return NIVEL_MINIMO[visado.minimo];
   }
   return 0;
 }
-
+ 
 function ordenarVisados(todos, estudios) {
   var nivel = NIVEL_USUARIO[estudios];
   if (nivel === undefined) { nivel = 0; }
   var copia = todos.slice();
-
+ 
   copia.sort(function (a, b) {
     var cumpleA = nivelMinimoDe(a) <= nivel;
     var cumpleB = nivelMinimoDe(b) <= nivel;
@@ -163,60 +171,88 @@ function ordenarVisados(todos, estudios) {
   });
   return copia;
 }
-
+ 
+// Resalta la tarjeta del visado que se está viendo en la ficha
+function marcarActiva(id) {
+  var tarjetas = document.querySelectorAll("#gridTarjetasVisados .vcard");
+  for (var i = 0; i < tarjetas.length; i++) {
+    var on = tarjetas[i].getAttribute("data-id") === id;
+    tarjetas[i].classList.toggle("activa", on);
+    tarjetas[i].setAttribute("aria-pressed", on ? "true" : "false");
+  }
+}
+ 
+// Pone en negrita la idea principal de un elemento de lista
+function negrita(texto) {
+  var t = String(texto), corte = t.search(/[:,;(]/), pre;
+  if (corte > 0 && t.slice(0, corte).trim().split(" ").length <= 8) {
+    pre = t.slice(0, corte).trim();
+  } else {
+    var pal = t.replace(/\.$/, "").split(" ");
+    var n = Math.min(3, pal.length);
+    while (n > 1 && /^(de|del|la|el|los|las|un|una|en|a|y|o|con|tu|tus|por|para)$/i.test(pal[n - 1])) { n--; }
+    pre = pal.slice(0, n).join(" ");
+  }
+  return "<strong>" + pre + "</strong>" + t.slice(pre.length);
+}
+ 
+// 3 puntos clave resumidos a partir de los datos del visado
+function puntosClave(v) {
+  var docs = v.documentos || [], pasos = v.pasos || [];
+  var clave = docs.length ? docs[0].replace(/\.$/, "") + (docs.length > 1 ? " y " + (docs.length - 1) + " documentos más" : "") : "Consulta la web oficial";
+  var items = [
+    ["👤 ¿Para quién es?", v.tipo + " · estudios: " + v.minimo],
+    ["📎 ¿Qué necesito clave?", clave],
+    ["🚀 ¿Cuál es el primer paso?", pasos.length ? pasos[0] : "Consulta la web oficial"]
+  ];
+  var html = "<div class='puntos'>";
+  items.forEach(function (p) { html += "<div class='punto'><span>" + p[0] + "</span><p>" + p[1] + "</p></div>"; });
+  return html + "</div>";
+}
+ 
+// ---------- 3. TARJETAS SUPERIORES ----------
 function dibujarTarjetasVisuales(estudios, selVisado, mostrarFichaFunc, fichaEl, listaVisados) {
   var seccionVias = document.getElementById("vias");
   if (!seccionVias) return;
-
+ 
   var anterior = document.getElementById("gridTarjetasVisados");
   if (anterior) anterior.remove();
-
+ 
   var nivel = NIVEL_USUARIO[estudios] !== undefined ? NIVEL_USUARIO[estudios] : 0;
-
-  var contenedorGrid = document.createElement("div");
-  contenedorGrid.id = "gridTarjetasVisados";
-
+  var grid = document.createElement("div");
+  grid.id = "gridTarjetasVisados";
+ 
   listaVisados.forEach(function (v, i) {
     var cumple = nivelMinimoDe(v) <= nivel;
-    var esRecomendado = (i === 0 && cumple);
-
+    var b = (i === 0 && cumple) ? ["rec", "★ Más recomendado para ti"]
+          : (cumple ? ["ok", "Encaja con tu perfil"] : ["mas", "Requiere más estudios"]);
+ 
     var card = document.createElement("div");
-    if (esRecomendado) {
-      card.style.cssText = "background: #f0f7f4; border: 2px solid #0b3d3a; border-radius: 10px; padding: 18px; cursor: pointer; box-shadow: 0 4px 12px rgba(11,61,58,0.15);";
-    } else {
-      card.style.cssText = "background: #ffffff; border: 1px solid #d8dee4; border-radius: 10px; padding: 18px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.03);";
-    }
-
-    var badge = esRecomendado
-      ? "<span style='display:inline-block; background:#0b3d3a; color:#fff; font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:4px; margin-bottom:10px;'>★ MÁS RECOMENDADO PARA TI</span>"
-      : (!cumple
-        ? "<span style='display:inline-block; background:#fff3cd; color:#856404; font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:4px; margin-bottom:10px;'>Pide estudios: " + v.minimo + "</span>"
-        : "<span style='display:inline-block; background:#e9ecef; color:#495057; font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:4px; margin-bottom:10px;'>Opción disponible</span>");
-
-    card.innerHTML = badge +
-      "<h3 style='margin: 0 0 8px 0; font-size: 1.1rem; color: #0b3d3a;'>" + v.nombre + "</h3>" +
-      "<p style='margin: 0 0 10px 0; font-size: 0.85rem; color: #555; font-weight: 500;'>" + v.tipo + "</p>" +
-      "<p style='margin: 0; font-size: 0.9rem; color: #444; line-height: 1.4;'>" + v.descripcion + "</p>";
-
-    card.addEventListener("click", function () {
-      if (selVisado) {
-        selVisado.value = v.id;
-      }
+    card.className = "vcard";
+    card.setAttribute("data-id", v.id);
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.innerHTML = "<span class='badge " + b[0] + "'>" + b[1] + "</span>" +
+      "<h3>" + v.nombre + "</h3><p>" + v.descripcion + "</p>" +
+      "<div class='pills'><span class='pill'>🎓 " + v.minimo + "</span><span class='pill'>🧭 " + v.tipo + "</span></div>";
+ 
+    function elegir() {
+      if (selVisado) { selVisado.value = v.id; }
       mostrarFichaFunc(v.id);
       if (fichaEl) fichaEl.scrollIntoView({ behavior: "smooth" });
+    }
+    card.addEventListener("click", elegir);
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); elegir(); }
     });
-
-    contenedorGrid.appendChild(card);
+    grid.appendChild(card);
   });
-
+ 
   var selectoresDiv = seccionVias.querySelector(".selectores");
-  if (selectoresDiv) {
-    seccionVias.insertBefore(contenedorGrid, selectoresDiv);
-  } else {
-    seccionVias.prepend(contenedorGrid);
-  }
+  if (selectoresDiv) { seccionVias.insertBefore(grid, selectoresDiv); } else { seccionVias.prepend(grid); }
+  marcarActiva(selVisado ? selVisado.value : "");
 }
-
+ 
 // ---------- PROGRAMA PRINCIPAL ----------
 document.addEventListener("DOMContentLoaded", async function () {
   var selVisado = document.getElementById("selVisado");
@@ -228,9 +264,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     origen: "Honduras",
     pais: "España"
   };
-
+ 
   var params = new URLSearchParams(window.location.search);
-
+ 
   // 1. Leer de la URL si hay parámetros
   if (params.toString().length > 0) {
     perfilUsuario = {
@@ -257,7 +293,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           .select("id")
           .eq("auth_id", user.id)
           .single();
-
+ 
         if (perfil) {
           var { data: ultimo } = await clienteSupabase
             .from("cuestionarios")
@@ -266,7 +302,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             .order("fecha_creacion", { ascending: false })
             .limit(1)
             .single();
-
+ 
           if (ultimo) {
             perfilUsuario = ultimo;
           }
@@ -276,26 +312,25 @@ document.addEventListener("DOMContentLoaded", async function () {
       console.error("Error al recuperar el cuestionario de Supabase:", e);
     }
   }
-
+ 
   // Forzamos siempre destino España y origen Honduras por defecto
   perfilUsuario.pais = "España";
   if (!perfilUsuario.origen) {
     perfilUsuario.origen = "Honduras";
   }
-
+ 
   var tituloPais = document.getElementById("tituloPais");
   if (tituloPais) {
     tituloPais.textContent = "Visados y vías para " + pais.nombre;
   }
-
+ 
   var subtituloPais = document.getElementById("subtituloPais");
   if (subtituloPais) {
     subtituloPais.textContent = "Opciones orientativas desde " + perfilUsuario.origen + " hacia " + pais.nombre + " según tu perfil.";
   }
-
+ 
   // 3. Pintar el resumen de respuestas
-  agregarFila("Origen", perfilUsuario.origen);
-  agregarFila("País de destino", pais.nombre);
+  agregarFila("Trayecto", perfilUsuario.origen + " → " + pais.nombre);
   agregarFila("Estudios", traducir("estudios", perfilUsuario.estudios));
   agregarFila("Título", perfilUsuario.titulo);
   agregarFila("Formación extra", unir("formacion", perfilUsuario.formacion));
@@ -306,11 +341,11 @@ document.addEventListener("DOMContentLoaded", async function () {
   agregarFila("Jornada", traducir("jornada", perfilUsuario.jornada));
   agregarFila("Áreas de interés", unir("area", perfilUsuario.area));
   agregarFila("Comentarios", perfilUsuario.comentarios);
-
+ 
   // 4. Renderizado de visados para España
   var seccionVias = document.getElementById("vias");
   var avisoUE = document.getElementById("avisoUE");
-
+ 
   if (perfilUsuario.ue === "si") {
     if (avisoUE) {
       avisoUE.hidden = false;
@@ -318,26 +353,26 @@ document.addEventListener("DOMContentLoaded", async function () {
         "<p>Como ciudadano de la Unión Europea puedes residir y trabajar en España sin necesidad de un visado de trabajo extracomunitario, aunque deberás realizar los trámites de registro correspondientes.</p>";
     }
   }
-
+ 
   if (!pais || !Array.isArray(pais.visados) || pais.visados.length === 0) {
     mostrarMensaje("No hay fichas de visados disponibles para España en este momento.");
     return;
   }
-
+ 
   if (seccionVias) seccionVias.hidden = false;
   var mensajeError = document.getElementById("mensaje");
   if (mensajeError) mensajeError.hidden = true;
-
+ 
   var tituloVias = document.getElementById("tituloVias");
   if (tituloVias) tituloVias.textContent = "Vías posibles en " + pais.nombre + " (desde " + perfilUsuario.origen + ")";
-
+ 
   lista = ordenarVisados(pais.visados, perfilUsuario.estudios);
-
+ 
   function rellenarDesplegable() {
     var nivel = NIVEL_USUARIO[perfilUsuario.estudios];
     if (nivel === undefined) { nivel = 0; }
     var html = "";
-
+ 
     for (var i = 0; i < lista.length; i++) {
       var texto = lista[i].nombre;
       if (i === 0 && nivelMinimoDe(lista[i]) <= nivel) {
@@ -348,7 +383,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       html += "<option value='" + lista[i].id + "'>" + texto + "</option>";
     }
     if (selVisado) selVisado.innerHTML = html;
-
+ 
     var idHash = window.location.hash.replace("#", "");
     for (var j = 0; j < lista.length; j++) {
       if (lista[j].id === idHash && selVisado) {
@@ -356,12 +391,12 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
     }
   }
-
+ 
   function mostrarFicha(idForzado) {
     if (!ficha) return;
     var idObjetivo = idForzado || (selVisado ? selVisado.value : (lista[0] ? lista[0].id : ""));
     var visado = null;
-
+ 
     for (var i = 0; i < lista.length; i++) {
       if (lista[i].id === idObjetivo) {
         visado = lista[i];
@@ -372,50 +407,52 @@ document.addEventListener("DOMContentLoaded", async function () {
       visado = lista[0];
     }
     if (!visado) return;
-
+ 
     var html = "";
     html += "<span class='etiqueta'>" + visado.tipo + "</span>";
     html += "<h1>" + (pais.bandera || "🇪🇸") + " " + visado.nombre + "</h1>";
     html += "<p class='ubicacion'>📍 Origen: " + perfilUsuario.origen + " → Destino: " + pais.nombre + "</p>";
     html += "<p>" + visado.descripcion + "</p>";
-
+    html += puntosClave(visado);
+ 
     html += "<div class='datos' id='validez'>";
     for (var clave in visado.datos) {
       html += "<div class='dato'><span>" + clave + "</span><b>" + visado.datos[clave] + "</b></div>";
     }
     html += "</div>";
-
+ 
     if (visado.aviso) {
       html += "<p class='aviso-ficha'>" + visado.aviso + "</p>";
     }
-
+ 
     html += "<h2 id='documentos'>Documentos necesarios</h2><ol>";
     for (var d = 0; d < visado.documentos.length; d++) {
-      html += "<li>" + visado.documentos[d] + "</li>";
+      html += "<li>" + negrita(visado.documentos[d]) + "</li>";
     }
     html += "</ol>";
-
+ 
     html += "<h2 id='procedimiento'>Procedimiento</h2><ol>";
     for (var p = 0; p < visado.pasos.length; p++) {
-      html += "<li>" + visado.pasos[p] + "</li>";
+      html += "<li>" + negrita(visado.pasos[p]) + "</li>";
     }
     html += "</ol>";
-
+ 
     html += "<h2 id='masinfo'>Más información</h2>";
     html += "<p>Suele pedir como mínimo: <b>" + visado.minimo + "</b>.</p>";
     html += "<p>Comprueba siempre las condiciones actuales en <a href='" + pais.web + "' target='_blank' rel='noopener'>" + pais.web + "</a></p>";
-
+ 
     html += "<div class='empezar'>";
     html += "<a class='boton-empezar' href='proceso.html?origen=" + encodeURIComponent(perfilUsuario.origen) + "&pais=" + clavePais + "&visado=" + encodeURIComponent(visado.id) + "'>Empezar con este visado →</a>";
     html += "</div>";
-
+ 
     ficha.innerHTML = html;
+    marcarActiva(visado.id);
   }
-
+ 
   rellenarDesplegable();
   mostrarFicha();
   dibujarTarjetasVisuales(perfilUsuario.estudios, selVisado, mostrarFicha, ficha, lista);
-
+ 
   if (selVisado) {
     selVisado.addEventListener("change", function () {
       mostrarFicha(selVisado.value);

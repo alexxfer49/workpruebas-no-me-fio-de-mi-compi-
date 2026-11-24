@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 // 3. Comprobar si Supabase ha iniciado sesión automáticamente
                 if (registro.data.session) {
-                    alert("¡Cuenta creada con éxito! Entrando en tu cuenta...");
                     window.location.href = "index.html"; 
                 } else {
                     alert("Cuenta creada correctamente. Revisa tu correo electrónico para confirmar el registro antes de iniciar sesión.");
