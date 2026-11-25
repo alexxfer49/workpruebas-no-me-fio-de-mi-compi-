@@ -1,30 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
-
+ 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="img/logo-icon.png">
     <title>Tu proceso · WorkPath</title>
-
+ 
     <!-- Oculta la página hasta comprobar que hay sesión (ver js/proteger.js) -->
     <style>html { visibility: hidden; }</style>
-
+ 
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/cuestionario.css">
     <link rel="stylesheet" href="css/proceso.css">
-
+ 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/proteger.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/visados-datos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+    <script src="js/almacen-documentos.js"></script>
     <script src="js/proceso.js" defer></script>
 </head>
-
+ 
 <body>
-
+ 
     <header class="top">
         <a class="brand" href="index.html">
             <img src="img/logo-icon.png" alt="Logo WorkPath">
@@ -36,46 +37,47 @@
             <a href="login.html" class="user" id="enlaceAcceso">👤 Mi Perfil</a>
         </nav>
     </header>
-
+ 
     <section class="banda">
         <h1 id="tituloProceso">Tu proceso</h1>
         <p id="subtituloProceso">Prepara tus documentos paso a paso.</p>
     </section>
-
+ 
     <main class="pagina">
         <ol class="trayecto" aria-label="Tu trayecto">
             <li class="hecho"><span class="num">✓</span><div><b>Tu perfil</b><small>Cuestionario</small></div></li>
             <li class="hecho"><span class="num">✓</span><div><b>Vías en España</b><small>Visado elegido</small></div></li>
             <li class="actual"><span class="num">3</span><div><b>Paso a paso</b><small>Documentos y trámite</small></div></li>
         </ol>
-
+ 
         <p id="errorProceso" class="error" hidden></p>
-
+ 
         <section id="contenidoProceso" hidden>
             <div class="progreso-caja">
                 <div><b id="textoProgreso">0 de 0 documentos listos</b>
-                    <small>🔒 Las fotos se leen en tu navegador y se guardan en un espacio privado de tu cuenta: solo tú puedes verlas.</small></div>
+                    <small>🔒 Las fotos se leen en tu navegador y se guardan solo en este dispositivo.</small></div>
                 <progress id="barraProgreso" max="100" value="0"></progress>
             </div>
-
+ 
             <h2>📄 Tus documentos</h2>
             <p class="ayuda">Haz una foto clara de cada documento (buena luz, sin reflejos, texto recto). La lectura automática es orientativa: revisa siempre tú el resultado.</p>
             <ul id="listaDocs" class="docs"></ul>
-
+ 
             <h2>🧭 Paso a paso</h2>
             <ol id="listaPasos" class="pasos"></ol>
-
+ 
             <div class="botones">
                 <a id="volverVias" href="resultado.html" class="btn claro">← Volver a las vías</a>
             </div>
         </section>
     </main>
-
+ 
     <footer>
         WorkPath · Solo orienta. No tramita visados ni sustituye a una embajada, un abogado o un asesor.
         Comprueba siempre la fuente oficial.
     </footer>
-
+ 
 </body>
-
+ 
 </html>
+ 
