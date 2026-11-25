@@ -2,11 +2,11 @@
 // proceso.js
 // Lista de documentos del visado elegido. El usuario sube una foto de
 // cada uno y Tesseract.js (OCR) la lee en el navegador para comprobar
-// que parece el documento correcto. Las fotos se guardan en Supabase Storage
-// (bucket privado "documentos", carpeta del usuario). Ver supabase-documentos.sql.
+// que parece el documento correcto. Dónde se guardan las fotos lo decide
+// js/almacen-documentos.js (objeto Almacen). Cárgalo antes que este archivo.
 // Necesita visados-datos.js y tesseract.js cargados antes.
 // =====================================================
-
+ 
 // Palabras que suelen aparecer en cada tipo de documento (sin tildes, en minúsculas)
 var CLAVES_DOC = [
   [/pasaporte/, ["pasaporte", "passport", "honduras", "republica", "apellidos", "surname"]],
@@ -21,11 +21,11 @@ var CLAVES_DOC = [
   [/plan de negocio|proyecto/, ["plan", "negocio", "proyecto", "inversion", "viabilidad"]],
   [/licencia|colegiacion/, ["licencia", "colegiado", "colegio", "habilita"]]
 ];
-
+ 
 function sinTildes(t) {
   return String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
-
+ 
 function palabrasDe(documento) {
   var d = sinTildes(documento);
   for (var i = 0; i < CLAVES_DOC.length; i++) {
@@ -35,12 +35,12 @@ function palabrasDe(documento) {
   }
   return [];
 }
-
+ 
 // --- Un único "worker" de Tesseract, con cola para no leer dos fotos a la vez ---
 var worker = null;
 var cola = Promise.resolve();
 var alProgreso = null;
-
+ 
 function leerFoto(archivo, progreso) {
   cola = cola.then(async function () {
     if (typeof Tesseract === "undefined") { throw new Error("No se ha podido cargar Tesseract."); }
@@ -55,16 +55,14 @@ function leerFoto(archivo, progreso) {
   });
   return cola;
 }
-
+ 
 function crear(tag, texto, clase) {
   var el = document.createElement(tag);
   if (texto) el.textContent = texto;
   if (clase) el.className = clase;
   return el;
 }
-
-var BUCKET = "documentos";
-
+ 
 // Reduce la foto (máx. 2000 px, JPEG) para que pese poco y el OCR sea más rápido
 function reducir(archivo) {
   return new Promise(function (ok, ko) {
@@ -82,7 +80,7 @@ function reducir(archivo) {
     img.src = url;
   });
 }
-
+ 
 document.addEventListener("DOMContentLoaded", async function () {
   var params = new URLSearchParams(window.location.search);
   var clavePais = params.get("pais") || "espana";
@@ -90,9 +88,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   var pais = (typeof PAISES !== "undefined") ? PAISES[clavePais] : null;
   var visado = null;
   var errorBox = document.getElementById("errorProceso");
-
+ 
   function aviso(texto) { errorBox.textContent = texto; errorBox.hidden = false; }
-
+ 
   if (pais) {
     for (var i = 0; i < pais.visados.length; i++) {
       if (pais.visados[i].id === params.get("visado")) { visado = pais.visados[i]; }
@@ -103,86 +101,58 @@ document.addEventListener("DOMContentLoaded", async function () {
     aviso("No hemos encontrado el visado elegido. Vuelve al resultado y elige una vía.");
     return;
   }
-
+ 
   document.getElementById("contenidoProceso").hidden = false;
   document.getElementById("tituloProceso").textContent = visado.nombre;
   document.getElementById("subtituloProceso").textContent = origen + " → " + pais.nombre + " · " + visado.tipo;
   document.getElementById("volverVias").href = "resultado.html#" + encodeURIComponent(visado.id);
   document.title = "Proceso · " + visado.nombre + " · WorkPath";
-
-  // ---- Cargar lo ya guardado en la cuenta del usuario ----
-  var uid = null, filas = {}, urls = {};
-  if (typeof clienteSupabase !== "undefined") {
-    try {
-      var u = await clienteSupabase.auth.getUser();
-      uid = u.data && u.data.user ? u.data.user.id : null;
-      if (uid) {
-        var r = await clienteSupabase.from("documentos_visado").select("*").eq("pais", clavePais).eq("visado", visado.id);
-        if (r.error) { throw r.error; }
-        r.data.forEach(function (f) { filas[f.doc_idx] = f; });
-        var rutas = r.data.map(function (f) { return f.ruta; }).filter(Boolean);
-        if (rutas.length) {
-          var sg = await clienteSupabase.storage.from(BUCKET).createSignedUrls(rutas, 3600);
-          (sg.data || []).forEach(function (x) { if (x.signedUrl) { urls[x.path] = x.signedUrl; } });
-        }
-      }
-    } catch (e) {
-      console.error("Error al cargar tus documentos:", e);
-      aviso("No se han podido cargar tus documentos guardados. Por ahora trabajarás sin guardar en tu cuenta.");
-      uid = null;
-    }
+ 
+  // ---- Estado guardado (ver almacen-documentos.js) ----
+  var ctx = { pais: clavePais, visado: visado.id };
+  var datos = {};
+  try { datos = (await Almacen.cargar(ctx)) || {}; } catch (e) {
+    console.error("Error al cargar los documentos:", e);
+    aviso("No se han podido cargar tus documentos guardados.");
   }
-
-  // Sin cuenta: solo se recuerda en este navegador qué documentos están listos
-  var claveLocal = "wp-proceso-" + clavePais + "-" + visado.id;
-  var local = {};
-  try { local = JSON.parse(localStorage.getItem(claveLocal) || "{}"); } catch (e) { local = {}; }
-
-  function esListo(idx) { return uid ? !!(filas[idx] && filas[idx].listo) : !!local[idx]; }
-
-  async function guardarFila(idx, cambios) {
-    if (!uid) {
-      if ("listo" in cambios) {
-        local[idx] = cambios.listo;
-        try { localStorage.setItem(claveLocal, JSON.stringify(local)); } catch (e) { /* sin almacenamiento */ }
-      }
-      return;
-    }
-    var fila = Object.assign({ usuario_id: uid, pais: clavePais, visado: visado.id, doc_idx: idx, actualizado: new Date().toISOString() }, cambios);
-    var res = await clienteSupabase.from("documentos_visado").upsert(fila, { onConflict: "usuario_id,pais,visado,doc_idx" }).select().single();
-    if (res.error) { throw res.error; }
-    filas[idx] = res.data;
-  }
-
+ 
+  function fila(idx) { if (!datos[idx]) { datos[idx] = {}; } return datos[idx]; }
+  function esListo(idx) { return !!(datos[idx] && datos[idx].listo); }
+  function urlDe(foto) { return typeof foto === "string" ? foto : URL.createObjectURL(foto); }
+ 
   function actualizarProgreso() {
     var total = visado.documentos.length, listos = 0;
     for (var k = 0; k < total; k++) { if (esListo(k)) { listos++; } }
     document.getElementById("textoProgreso").textContent = listos + " de " + total + " documentos listos";
     document.getElementById("barraProgreso").value = total ? Math.round(listos * 100 / total) : 0;
   }
-
+ 
   var TEXTO_ESTADO = { ok: "✅ Parece correcto", revisar: "⚠️ Revisa esta foto" };
   var lista = document.getElementById("listaDocs");
-
+ 
   visado.documentos.forEach(function (texto, idx) {
     var palabras = palabrasDe(texto);
     var li = crear("li", null, "doc");
-
+ 
     var cab = crear("label", null, "doc-cab");
     var chk = document.createElement("input");
     chk.type = "checkbox";
     chk.checked = esListo(idx);
     chk.addEventListener("change", function () {
-      guardarFila(idx, { listo: chk.checked }).then(actualizarProgreso).catch(function (e) {
+      var nuevo = chk.checked;
+      Almacen.guardarListo(ctx, idx, nuevo).then(function () {
+        fila(idx).listo = nuevo;
+        actualizarProgreso();
+      }).catch(function (e) {
         console.error(e);
-        chk.checked = !chk.checked;
+        chk.checked = !nuevo;
         aviso("No se ha podido guardar el cambio. Inténtalo de nuevo.");
       });
     });
     cab.appendChild(chk);
     cab.appendChild(crear("span", texto));
     li.appendChild(cab);
-
+ 
     var acciones = crear("div", null, "doc-acciones");
     var subir = crear("label", "📷 Subir foto", "btn claro");
     var input = document.createElement("input");
@@ -197,50 +167,45 @@ document.addEventListener("DOMContentLoaded", async function () {
     var estado = crear("span", "", "doc-estado");
     acciones.appendChild(estado);
     li.appendChild(acciones);
-
+ 
     var barra = document.createElement("progress");
     barra.max = 1; barra.value = 0; barra.hidden = true;
     li.appendChild(barra);
-
+ 
     var vista = document.createElement("img");
     vista.className = "doc-foto"; vista.alt = "Foto subida"; vista.hidden = true;
     li.appendChild(vista);
-
+ 
     var detalle = document.createElement("details");
     detalle.hidden = true;
     detalle.appendChild(crear("summary", "Ver texto leído"));
     var pre = crear("pre");
     detalle.appendChild(pre);
     li.appendChild(detalle);
-
+ 
     function setEstado(clase, txt) { estado.className = "doc-estado " + clase; estado.textContent = txt; }
-
-    // Foto ya guardada en la cuenta
-    var previa = filas[idx];
-    if (previa && previa.ruta && urls[previa.ruta]) {
-      vista.src = urls[previa.ruta];
+ 
+    // Foto ya guardada de otra sesión
+    var previa = datos[idx];
+    if (previa && previa.foto) {
+      vista.src = urlDe(previa.foto);
       vista.hidden = false;
       quitar.hidden = false;
-      if (previa.estado) { setEstado(previa.estado, TEXTO_ESTADO[previa.estado] + " · ☁️ Guardada"); }
+      if (previa.estado && TEXTO_ESTADO[previa.estado]) { setEstado(previa.estado, TEXTO_ESTADO[previa.estado]); }
     }
-
+ 
     input.addEventListener("change", async function () {
       var archivo = input.files && input.files[0];
       input.value = "";
       if (!archivo) return;
       if (!/^image\//.test(archivo.type)) { setEstado("revisar", "⚠️ Solo se admiten imágenes"); return; }
-
+ 
       try {
         setEstado("leyendo", "⏳ Preparando…");
         var blob = await reducir(archivo);
         vista.src = URL.createObjectURL(blob);
         vista.hidden = false;
-
-        var ruta = uid ? uid + "/" + clavePais + "/" + visado.id + "/" + idx + ".jpg" : null;
-        var subida = ruta
-          ? clienteSupabase.storage.from(BUCKET).upload(ruta, blob, { upsert: true, contentType: "image/jpeg" })
-          : Promise.resolve({});
-
+ 
         // OCR: si falla, la foto se guarda igualmente
         var resultado = "revisar", mensaje = "⚠️ No se ha podido leer automáticamente";
         setEstado("leyendo", "⏳ Leyendo…");
@@ -257,13 +222,13 @@ document.addEventListener("DOMContentLoaded", async function () {
           else { mensaje = "⚠️ No parece este documento: revisa la foto"; }
         } catch (e) { console.error("Error OCR:", e); }
         barra.hidden = true;
-
-        var sub = await subida;
-        if (sub.error) { throw sub.error; }
-        await guardarFila(idx, { ruta: ruta, estado: resultado, listo: resultado === "ok" ? true : esListo(idx) });
-        chk.checked = esListo(idx);
+ 
+        var listo = resultado === "ok" ? true : esListo(idx);
+        await Almacen.guardarFoto(ctx, idx, blob, resultado, listo);
+        Object.assign(fila(idx), { foto: blob, estado: resultado, listo: listo });
+        chk.checked = listo;
         quitar.hidden = false;
-        setEstado(resultado, mensaje + (uid ? " · ☁️ Guardada" : ""));
+        setEstado(resultado, mensaje);
         actualizarProgreso();
       } catch (e) {
         console.error("Error al subir la foto:", e);
@@ -271,15 +236,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         setEstado("revisar", "⚠️ No se ha podido guardar la foto: " + (e.message || "error"));
       }
     });
-
+ 
     quitar.addEventListener("click", async function () {
-      if (!confirm("¿Quitar esta foto de tu cuenta?")) return;
+      if (!confirm("¿Quitar esta foto?")) return;
       try {
-        if (uid && filas[idx] && filas[idx].ruta) {
-          var del = await clienteSupabase.storage.from(BUCKET).remove([filas[idx].ruta]);
-          if (del.error) { throw del.error; }
-        }
-        await guardarFila(idx, { ruta: null, estado: null });
+        await Almacen.quitarFoto(ctx, idx);
+        Object.assign(fila(idx), { foto: null, estado: null });
         vista.hidden = true; vista.removeAttribute("src");
         detalle.hidden = true; quitar.hidden = true;
         setEstado("", "");
@@ -288,12 +250,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         aviso("No se ha podido quitar la foto. Inténtalo de nuevo.");
       }
     });
-
+ 
     lista.appendChild(li);
   });
-
+ 
   var pasos = document.getElementById("listaPasos");
   visado.pasos.forEach(function (p) { pasos.appendChild(crear("li", p)); });
-
+ 
   actualizarProgreso();
 });
+ 
