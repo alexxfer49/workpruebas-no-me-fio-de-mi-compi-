@@ -5,7 +5,7 @@ main.pagina { max-width: 980px; width: 100%; margin: 0 auto; box-sizing: border-
 .error { background: #fdecea; border: 1px solid #e5a29b; border-radius: 8px; padding: 12px 16px; color: #991b1b; }
 .ayuda { color: #64748b; font-size: .92rem; margin: -6px 0 16px; }
 h2 { color: #0b3d3a; }
-
+ 
 /* Trayecto (igual que en resultado) */
 .trayecto { list-style: none; margin: 0 0 22px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .trayecto li { position: relative; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; }
@@ -15,13 +15,13 @@ h2 { color: #0b3d3a; }
 .trayecto small { color: #64748b; font-size: .8rem; }
 .trayecto .hecho .num, .trayecto .actual .num { background: #0b3d3a; color: #fff; }
 .trayecto .actual { border-color: #0b3d3a; background: #f0f7f4; }
-
+ 
 /* Progreso */
 .progreso-caja { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 8px; }
 .progreso-caja small { display: block; color: #64748b; margin-top: 2px; }
 .progreso-caja progress { flex: 1 1 200px; max-width: 320px; height: 12px; }
 progress { accent-color: #0b3d3a; }
-
+ 
 /* Documentos */
 .docs { list-style: none; margin: 0 0 30px; padding: 0; display: grid; gap: 12px; }
 .doc { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; box-shadow: 0 2px 4px rgba(0, 0, 0, .02); }
@@ -36,23 +36,24 @@ progress { accent-color: #0b3d3a; }
 .doc-foto { display: block; max-width: 100%; max-height: 220px; margin-top: 12px; border-radius: 8px; border: 1px solid #e2e8f0; object-fit: contain; }
 .doc details { margin-top: 10px; font-size: .85rem; color: #475569; }
 .doc pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; max-height: 180px; overflow: auto; }
-
+ 
 /* Botones */
 .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; background: #0b3d3a; color: #fff; font-weight: 700; text-decoration: none; cursor: pointer; font-size: .92rem; }
 .btn.claro { background: #e2e8f0; color: #334155; }
 .btn:hover { filter: brightness(.95); }
 .btn input[type="file"] { display: none; }
 .botones { margin-top: 28px; }
-
+ 
 /* Pasos */
 .pasos { padding-left: 22px; color: #334155; line-height: 1.7; }
 .pasos li { margin-bottom: 8px; }
 .pasos li::marker { color: #0b3d3a; font-weight: 700; }
-
+ 
 @media (max-width: 700px) {
   .trayecto { grid-template-columns: 1fr; }
   .trayecto li:not(:last-child)::after { display: none; }
   .progreso-caja progress { max-width: none; }
 }
-
+ 
 button.btn { border: 0; font-family: inherit; }
+ 
