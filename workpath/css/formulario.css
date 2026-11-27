@@ -1,0 +1,86 @@
+/* Estilos generales */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #eef1f5;
+  margin: 0;
+  padding: 20px;
+  color: #222;
+}
+
+/* Caja central que contiene el formulario */
+.contenedor {
+  max-width: 500px;
+  margin: 30px auto;
+  background-color: white;
+  padding: 25px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 26px;
+  color: #1f4e79;
+}
+
+/* Etiquetas de cada campo */
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+/* Campos de texto, correo, teléfono y archivo */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="file"] {
+  width: 100%;
+  padding: 9px;
+  margin-top: 5px;
+  border: 1px solid #999;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 15px;
+}
+
+/* Resalta el campo en el que estás escribiendo */
+input:focus {
+  outline: none;
+  border-color: #1f4e79;
+  box-shadow: 0 0 4px #1f4e79;
+}
+
+/* Botones */
+.botones {
+  margin-top: 25px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #1f4e79;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #163a5a;
+}
+
+button.secundario {
+  background-color: #777;
+}
+
+button.secundario:hover {
+  background-color: #555;
+}
+
+/* Pantallas pequeñas (móvil) */
+@media (max-width: 600px) {
+  .contenedor {
+    padding: 15px;
+  }
+}
