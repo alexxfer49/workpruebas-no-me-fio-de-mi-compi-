@@ -1,0 +1,171 @@
+/* Estilos del visado recomendado, la lista de visados y visados.html.
+   Usa las variables de css/base.css (variables, botones, animaciones) y css/layout.css. Carga después de ellos.
+   Cárgalo después de ellos (en resultado.html y en visados.html). */
+
+/* Botón con flecha a la derecha */
+.boton-enlace.adelante::before { content: none; }
+.boton-enlace.adelante::after { content: "→"; display: inline-block; transition: transform .2s; }
+.boton-enlace.adelante:hover::after { transform: translateX(5px); }
+.boton-enlace.grande { margin-top: 1.25rem; }
+.boton-enlace.claro { background: #fff; color: var(--navy); border-color: var(--line); }
+.boton-enlace.claro:hover { background: #E3F3EA; border-color: var(--green); color: #0b7a54; }
+
+/* ---------- Visado más recomendado (resultado.html) ---------- */
+.destacado, .detalle.recomendado {
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding: 1.4rem 1.6rem;
+    background: linear-gradient(135deg, #F1FAF5, #fff 60%);
+    border: 2px solid var(--green);
+    border-radius: var(--r);
+    box-shadow: 0 10px 30px rgba(13, 138, 95, .18);
+    animation: subir .55s ease both;
+}
+
+.sello {
+    display: inline-block;
+    margin: 0 0 .6rem;
+    padding: .3rem .9rem;
+    background: var(--lime);
+    color: var(--navy);
+    font-size: .85rem;
+    font-weight: 800;
+    border-radius: 99px;
+}
+
+.destacado h3 { margin: 0 0 .4rem; font-size: 1.4rem; color: var(--navy); }
+.aviso-suave { font-weight: 700; color: var(--mut); }
+
+/* Motivos (✓) y avisos (!) */
+.motivos { margin: .8rem 0 0; padding: 0; list-style: none; }
+.motivos li { margin: .35rem 0; padding-left: 1.7rem; position: relative; }
+.motivos li::before {
+    content: "✓";
+    content: "✓" / "";
+    position: absolute; left: 0;
+    color: #0b7a54; font-weight: 800;
+}
+.motivos li.pega::before { content: "!"; content: "!" / ""; color: #b45309; }
+
+/* ---------- Otros visados (resultado.html) ---------- */
+.subtitulo { margin: 1.75rem 0 .75rem; color: var(--navy); }
+
+.fila-visado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: .6rem;
+    padding: .9rem 1.25rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--blue);
+    border-radius: var(--r);
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+
+.fila-visado:hover {
+    transform: translateX(6px);
+    border-left-color: var(--lime);
+    box-shadow: 0 8px 22px rgba(3, 39, 65, .12);
+}
+
+.fila-visado strong { display: block; color: var(--navy); }
+.fila-visado small { color: var(--mut); }
+.fila-visado:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+.etiqueta {
+    flex: none;
+    padding: .25rem .8rem;
+    font-size: .85rem;
+    font-weight: 700;
+    border-radius: 99px;
+}
+.etiqueta.ok { background: #E3F3EA; color: #0b7a54; }
+.etiqueta.poco { background: #e2e8f0; color: #475569; }
+
+/* ---------- Página visados.html ---------- */
+.nota {
+    margin: 0 0 1.5rem;
+    padding: .8rem 1.1rem;
+    background: #fffbeb;
+    border-left: 5px solid #f59e0b;
+    border-radius: 10px;
+    color: #78350f;
+}
+
+.detalle {
+    margin-bottom: 1.5rem;
+    padding: 1.4rem 1.6rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--blue);
+    border-radius: var(--r);
+    box-shadow: 0 4px 16px rgba(3, 39, 65, .08);
+    scroll-margin-top: 5rem;
+    animation: subir .5s ease both;
+}
+
+.detalle.resaltado { box-shadow: 0 0 0 4px rgba(27, 163, 214, .35); }
+.detalle .tipo { margin: 0; font-size: .8rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--mut); }
+.detalle h2 { margin: .2rem 0 .6rem; color: var(--navy); }
+
+.ficha { display: grid; grid-template-columns: max-content 1fr; gap: .5rem 1.5rem; margin: 1rem 0 0; }
+.ficha dt { font-weight: 700; color: var(--navy); }
+.ficha dd { margin: 0; }
+.ficha ul { margin: 0; padding-left: 1.1rem; }
+
+.encaje { margin-top: 1.1rem; padding: .9rem 1.1rem; background: #f8fafc; border-radius: 10px; }
+.encaje h3 { margin: 0; font-size: 1rem; color: var(--navy); }
+
+.fuente { margin: 1.5rem 0 0; color: var(--mut); overflow-wrap: anywhere; }
+.fuente a { color: #0a6f96; font-weight: 600; }
+
+@media (max-width: 600px) {
+    .ficha { grid-template-columns: 1fr; gap: .1rem; }
+    .ficha dd { margin-bottom: .7rem; }
+    .fila-visado { flex-direction: column; align-items: flex-start; }
+    .fila-visado:hover { transform: none; }
+}
+
+/* ---------- Lista de vías posibles (resultado.html) ---------- */
+.fila-visado .ir {
+    flex: none;
+    font-weight: 700;
+    color: #0a6f96;
+    transition: transform .2s;
+}
+
+.fila-visado:hover .ir { transform: translateX(4px); }
+
+/* La fila del visado más recomendado destaca */
+.fila-visado.mejor {
+    background: linear-gradient(135deg, #F1FAF5, #fff 60%);
+    border: 2px solid var(--green);
+    border-left: 8px solid var(--lime);
+    box-shadow: 0 8px 24px rgba(13, 138, 95, .15);
+}
+
+.fila-visado .sello { margin-bottom: .4rem; }
+
+/* Notas generales para personas de Honduras (visados.html) */
+.notas-lista {
+    margin: 0 0 1.75rem;
+    padding: 1rem 1.25rem 1rem 2.4rem;
+    background: #E3F3EA;
+    border-left: 5px solid var(--green);
+    border-radius: 10px;
+    color: var(--navy);
+}
+.notas-lista li { margin: .4rem 0; }
+
+/* Aviso de qué cuestionario se usa para recomendar (visados.html) */
+.nota.ok {
+    background: #E3F3EA;
+    border-left-color: var(--green);
+    color: var(--navy);
+}
+.nota[hidden] { display: none; }
+.nota a { color: #0a6f96; font-weight: 700; }
